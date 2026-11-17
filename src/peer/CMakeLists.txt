@@ -1,0 +1,6 @@
+add_library(corecoin_peer STATIC peer.cpp ${PROJECT_SOURCE_DIR}/include/corecoin/peer.hpp)
+corecoin_component(corecoin_peer)
+target_link_libraries(corecoin_peer PUBLIC corecoin_storage)
+if(WIN32)
+  target_link_libraries(corecoin_peer PRIVATE ws2_32)
+endif()

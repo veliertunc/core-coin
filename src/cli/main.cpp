@@ -8,6 +8,13 @@
 #include <charconv>
 
 namespace corecoin::__cli {
+std::uint16_t parse_port(const std::string& text) {
+    unsigned port{};
+    const auto [end, error] = std::from_chars(text.data(), text.data() + text.size(), port);
+    if (error != std::errc{} || end != text.data() + text.size() || port == 0 || port > 65535)
+        throw std::invalid_argument("Port must be between 1 and 65535");
+    return static_cast<std::uint16_t>(port);
+}
 void print_chain(const Blockchain& chain) {
     for (const auto& block : chain.blocks()) {
         std::cout << "Block " << block.height() << " | nonce " << block.nonce()
@@ -40,6 +47,7 @@ void shell(const std::string& path) {
     std::cout << "CoreCoin local shell (persistent chain; named accounts are unsigned)\n"
                  "wallet ADDRESS | wallet-create FILE | wallet-open FILE | receive | send TO GIL | balance [ADDRESS]\n"
                  "send-core TO CORE | history [ADDRESS] | mine ACCOUNT | chain | validate | quit\n"
+                 "serve BIND_ADDRESS PORT | sync HOST PORT\n"
                  "Legacy send FROM TO GIL is also supported.\n"
                  "100000000 Gil = 1 CORE. Mine after sending to confirm transfers.\n"
               << "Selected wallet: " << active.address() << " | " << format_amount(active.balance(chain)) << '\n';
@@ -84,6 +92,21 @@ void shell(const std::string& path) {
                 store.save(candidate);
                 chain = std::move(candidate);
                 std::cout << "Mined " << hash << '\n';
+            } else if (command == "serve" || command == "sync") {
+                if (!(input >> a >> b) || (input >> extra)) throw std::invalid_argument("Expected host and port");
+                const auto port = parse_port(b);
+                if (command == "serve") {
+                    std::cout << "Serving one peer request (30 second timeout)\n" << std::flush;
+                    Peer::serve_once(a, port, chain);
+                    std::cout << "Peer request served\n";
+                } else {
+                    auto candidate = Peer::fetch(a, port);
+                    if (Consensus::prefer_candidate(chain, candidate)) {
+                        store.save(candidate);
+                        chain = std::move(candidate);
+                        std::cout << "Adopted peer chain at height " << chain.blocks().back().height() << '\n';
+                    } else std::cout << "Kept current chain\n";
+                }
             } else if (command == "history") {
                 if (!(input >> a)) a = active.address();
                 if (input >> extra) throw std::invalid_argument("Expected at most one address");

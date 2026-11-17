@@ -191,14 +191,31 @@ The library exposes immutable views of chain data; mining and submission keep
 state unchanged on rejected operations. Pending incoming funds may be spent
 by a later transaction in the same ordered block. Current-block rewards cannot.
 
+### Local peer synchronization
+
+Start two shells with different chain files. In the first, mine a block and run
+`serve 127.0.0.1 18444`. In the second, run `sync 127.0.0.1 18444`. The server
+handles one request and waits at most 30 seconds for a connection. Bind to an
+appropriate network interface to accept a connection from another computer.
+
+Peers exchange confirmed chains only, with a 4 MiB transfer limit. The receiver
+validates the complete chain and requires identical genesis, difficulty, and
+reward settings. Because difficulty is fixed, a longer valid chain represents
+more work; a tie keeps the local chain. A node with pending transactions refuses
+to replace its chain. An adopted chain is saved before it becomes active.
+Peers are configured manually; there is no discovery, transaction relay, or
+automatic background synchronization. The TCP connection is not authenticated
+or encrypted, so use it only on trusted networks.
+
 ## Scope
 
 This is an educational local prototype, **not suitable for real funds**.
 The founder and other named accounts remain unsigned: any local caller can spend
 from them. Key-backed `cc_` accounts require valid signatures, but cannot secure
-legacy balances until they are transferred. It has no peer-to-peer
-network, distributed consensus/fork selection, transaction fees,
-difficulty adjustment, or audited cryptography. Proof of work demonstrates
+legacy balances until they are transferred. It has no peer discovery, transaction
+propagation, transaction fees, difficulty adjustment,
+or audited cryptography. Fork selection is a basic fixed-difficulty prototype,
+not a production consensus protocol. Proof of work demonstrates
 local integrity checks; it does not by itself make this a secure currency.
 
 GoogleTest suites cover standard SHA-256 vectors, transfers, pending double spends, replay,

@@ -8,3 +8,5 @@
 #include "ledger.hpp"
 #include "chain_store.hpp"
 #include "signing_key.hpp"
+#include "consensus.hpp"
+#include "peer.hpp"

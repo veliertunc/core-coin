@@ -23,8 +23,7 @@ void ChainStore::recover() const {
     (void)ChainStore(backup).load();
     std::filesystem::rename(backup, path_);
 }
-Blockchain ChainStore::load() const {
-    std::ifstream in(path_, std::ios::binary);
+Blockchain ChainCodec::read(std::istream& in) {
     std::string magic;
     ChainConfig config;
     std::size_t count;
@@ -59,21 +58,30 @@ Blockchain ChainStore::load() const {
     if (!in.eof()) throw std::runtime_error("Trailing data in chain file");
     return Blockchain::from_blocks(std::move(blocks), config);
 }
-void ChainStore::save(const Blockchain& chain) const {
+Blockchain ChainStore::load() const {
+    std::ifstream in(path_, std::ios::binary);
+    if (!in) throw std::runtime_error("Cannot open chain file");
+    return ChainCodec::read(in);
+}
+void ChainCodec::write(std::ostream& out, const Blockchain& chain) {
     std::string error;
-    if (!chain.validate(&error)) throw std::runtime_error("Cannot save invalid chain: " + error);
+    if (!chain.validate(&error)) throw std::runtime_error("Cannot serialize invalid chain: " + error);
+    const auto config = chain.config();
+    out << "CORECOIN2 " << config.difficulty << ' ' << config.mining_reward << ' ' << chain.blocks().size() << '\n';
+    for (const auto& block : chain.blocks()) {
+        out << block.height() << ' ' << block.previous_hash() << ' ' << block.timestamp() << ' ' << block.difficulty() << ' ' << block.nonce() << ' ' << block.transactions().size() << '\n';
+        for (const auto& tx : block.transactions())
+            out << std::quoted(tx.sender()) << ' ' << std::quoted(tx.recipient()) << ' ' << tx.amount() << ' ' << tx.nonce()
+                << ' ' << std::quoted(tx.public_key()) << ' ' << std::quoted(tx.signature()) << '\n';
+    }
+    if (!out) throw std::runtime_error("Failed writing chain");
+}
+void ChainStore::save(const Blockchain& chain) const {
     auto temp = path_; temp += ".tmp";
     {
         std::ofstream out(temp, std::ios::binary | std::ios::trunc);
         if (!out) throw std::runtime_error("Cannot open temporary chain file");
-        const auto config = chain.config();
-        out << "CORECOIN2 " << config.difficulty << ' ' << config.mining_reward << ' ' << chain.blocks().size() << '\n';
-        for (const auto& block : chain.blocks()) {
-            out << block.height() << ' ' << block.previous_hash() << ' ' << block.timestamp() << ' ' << block.difficulty() << ' ' << block.nonce() << ' ' << block.transactions().size() << '\n';
-            for (const auto& tx : block.transactions())
-                out << std::quoted(tx.sender()) << ' ' << std::quoted(tx.recipient()) << ' ' << tx.amount() << ' ' << tx.nonce()
-                    << ' ' << std::quoted(tx.public_key()) << ' ' << std::quoted(tx.signature()) << '\n';
-        }
+        ChainCodec::write(out, chain);
         out.close();
         if (!out) throw std::runtime_error("Failed writing chain file");
     }

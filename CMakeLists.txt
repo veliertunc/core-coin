@@ -22,9 +22,11 @@ add_subdirectory(src/ledger)
 add_subdirectory(src/chain)
 add_subdirectory(src/wallet)
 add_subdirectory(src/storage)
+add_subdirectory(src/consensus)
+add_subdirectory(src/peer)
 add_library(corecoin INTERFACE)
 target_link_libraries(corecoin INTERFACE corecoin_amount corecoin_crypto corecoin_ledger
-                                         corecoin_chain corecoin_wallet corecoin_storage)
+                                         corecoin_chain corecoin_wallet corecoin_storage corecoin_consensus corecoin_peer)
 add_subdirectory(src/cli)
 
 include(CTest)
@@ -43,7 +45,7 @@ if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
       "${CMAKE_BINARY_DIR}/compile_commands.json" "${PROJECT_SOURCE_DIR}/compile_commands.json"
     COMMENT "Refreshing root compile_commands.json")
   foreach(target corecoin_amount corecoin_crypto corecoin_transaction corecoin_ledger
-                 corecoin_chain corecoin_wallet corecoin_storage corecoin_cli_input corecoin-cli)
+                 corecoin_chain corecoin_wallet corecoin_storage corecoin_consensus corecoin_peer corecoin_cli_input corecoin-cli)
     add_dependencies(${target} refresh-compilation-database)
   endforeach()
 endif()
