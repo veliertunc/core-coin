@@ -3,11 +3,14 @@ project(CoreCoin VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+
 add_library(corecoin src/sha256.cpp src/blockchain.cpp src/address.cpp src/genesis.cpp
-                     src/wallet.cpp src/amount.cpp src/ledger.cpp src/chain_validator.cpp src/chain_store.cpp)
+                     src/wallet.cpp src/amount.cpp src/ledger.cpp src/chain_validator.cpp src/chain_store.cpp src/signing_key.cpp)
 target_include_directories(corecoin PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
                                    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_compile_features(corecoin PUBLIC cxx_std_23)
+target_link_libraries(corecoin PUBLIC OpenSSL::Crypto)
 set_target_properties(corecoin PROPERTIES CXX_EXTENSIONS OFF)
 if(MSVC)
   target_compile_options(corecoin PRIVATE /W4 /permissive-)

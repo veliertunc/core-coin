@@ -30,6 +30,7 @@ void demo() {
 }
 void shell(const std::string& path) {
     ChainStore store(path);
+    store.recover();
     Blockchain chain = store.exists() ? store.load() : Blockchain{};
     if (!store.exists()) store.save(chain);
     Wallet active{std::string(initial_wallet_address)};

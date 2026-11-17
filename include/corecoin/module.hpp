@@ -7,3 +7,4 @@
 #include "wallet.hpp"
 #include "ledger.hpp"
 #include "chain_store.hpp"
+#include "signing_key.hpp"

@@ -29,7 +29,8 @@ bool ChainValidator::validate(const std::vector<Block>& blocks, ChainConfig conf
             const auto& reward = txs.back();
             const Amount expected_reward = std::min(config.mining_reward, maximum_supply - issued);
             if (!reward.sender().empty() || !valid_account(reward.recipient()) ||
-                reward.amount() != expected_reward || reward.nonce() != i)
+                reward.amount() != expected_reward || reward.nonce() != i ||
+                !reward.public_key().empty() || !reward.signature().empty())
                 throw std::invalid_argument("Invalid mining reward");
             if (expected_reward > 0) ledger.credit(reward.recipient(), expected_reward);
             issued += expected_reward;

@@ -9,15 +9,20 @@
 namespace corecoin {
 class Transaction {
 public:
-    Transaction(std::string sender, std::string recipient, Amount amount, std::uint64_t nonce);
+    Transaction(std::string sender, std::string recipient, Amount amount, std::uint64_t nonce,
+                std::string public_key = {}, std::string signature = {});
     [[nodiscard]] const std::string& sender() const noexcept { return sender_; }
     [[nodiscard]] const std::string& recipient() const noexcept { return recipient_; }
     [[nodiscard]] Amount amount() const noexcept { return amount_; }
     [[nodiscard]] std::uint64_t nonce() const noexcept { return nonce_; }
+    [[nodiscard]] const std::string& public_key() const noexcept { return public_key_; }
+    [[nodiscard]] const std::string& signature() const noexcept { return signature_; }
+    [[nodiscard]] std::string signing_payload() const;
     [[nodiscard]] std::string serialize() const;
     [[nodiscard]] std::string id() const;
 private:
     std::string sender_, recipient_;
+    std::string public_key_, signature_;
     Amount amount_;
     std::uint64_t nonce_;
 };

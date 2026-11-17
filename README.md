@@ -2,12 +2,12 @@
 
 # CoreCoin
 
-A self-contained, object-oriented C++23 blockchain coin prototype. No third-party
-libraries are required. The `corecoin` library is separate from the CLI.
+An object-oriented C++23 blockchain coin prototype. The `corecoin` library is
+separate from the CLI and uses OpenSSL 3 for key operations.
 
 ## Build and run
 
-Requires Python 3 (build script) or CMake 3.20+, and a C++23-capable compiler with its standard library
+Requires OpenSSL 3 development headers and libcrypto, Python 3 (build script) or CMake 3.20+, and a C++23-capable compiler with its standard library
 (for example Visual Studio 2022 with Desktop development with C++, GCC 13+, or
 Clang 17+ with an appropriate SDK).
 
@@ -115,7 +115,9 @@ form also works. `balance` shows confirmed and pending-adjusted balances;
 `history [ADDRESS]` displays confirmed and pending transactions for an account.
 Amounts in `send` are integer Gil; for example, `send bob 1` sends 1 Gil.
 Transfers become confirmed after mining. The shell saves confirmed blocks to `corecoin.chain` and validates them on restart.
-Pass a different path with `--shell PATH`. Pending transactions are held in memory
+Pass a different path with `--shell PATH`. If an interrupted save leaves only a
+backup, startup validates and restores it. If both files exist, inspect them
+manually before reopening. Pending transactions are held in memory
 and are lost on exit; mine them to confirm and save them. These addresses work only within
 the same local chain; there is no transfer between separate running processes.
 Names use 1–64 ASCII letters, digits, underscores, or hyphens.
@@ -145,6 +147,12 @@ so typed constants and `#pragma once` avoid reserved macro names.
 - `Wallet` handles named account selection, querying balances, and submitting
   transfers. Address checks, amount formatting, and genesis construction live
   in separate components. The wallet does not mine or print output.
+- `SigningKey` generates Ed25519 keys, signs messages, verifies signatures, and
+  stores keys in password-encrypted PKCS#8 files. Back up the encrypted file and
+  keep its password separately; losing either prevents recovery. Construct a
+  `Wallet` from a `SigningKey` to sign transfers from its `cc_` address.
+  The ledger verifies signatures during submission and chain replay. The shell
+  currently supports named accounts only; use the library for key-backed wallets.
 - `Block` commits to its height, previous hash, timestamp, difficulty, nonce,
   and ordered transactions. Mining searches for leading hexadecimal zeroes.
 - `Ledger` owns account balances and nonces and applies transfer rules.
@@ -170,8 +178,9 @@ by a later transaction in the same ordered block. Current-block rewards cannot.
 ## Scope
 
 This is an educational local prototype, **not suitable for real funds**.
-Account names are not cryptographic wallets: transactions are unsigned, and
-any local caller can spend from any funded account. It has no peer-to-peer
+The founder and other named accounts remain unsigned: any local caller can spend
+from them. Key-backed `cc_` accounts require valid signatures, but cannot secure
+legacy balances until they are transferred. It has no peer-to-peer
 network, distributed consensus/fork selection, transaction fees,
 difficulty adjustment, or audited cryptography. Proof of work demonstrates
 local integrity checks; it does not by itself make this a secure currency.

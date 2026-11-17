@@ -59,7 +59,7 @@ def main():
             signature.write_text(command_text)
     suffix = ".exe" if os.name == "nt" else ""
     for name, sources in [("corecoin-cli", [*library, app]), ("corecoin-tests", [*library, *tests])]:
-        subprocess.run([compiler, *[str(objects[p]) for p in sources], "-o", str(build / (name + suffix))],
+        subprocess.run([compiler, *[str(objects[p]) for p in sources], "-o", str(build / (name + suffix)), "-lcrypto"],
                        cwd=ROOT, check=True)
     if args.test:
         subprocess.run([str(build / ("corecoin-tests" + suffix))], cwd=ROOT, check=True)

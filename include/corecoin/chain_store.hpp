@@ -10,6 +10,8 @@ public:
     [[nodiscard]] Blockchain load() const;
     void save(const Blockchain& chain) const;
     [[nodiscard]] bool exists() const;
+    // Recover an interrupted replacement only when the primary file is absent.
+    void recover() const;
 private:
     std::filesystem::path path_;
 };
