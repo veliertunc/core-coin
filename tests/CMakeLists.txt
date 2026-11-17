@@ -1,5 +1,5 @@
 add_executable(corecoin-tests fixtures.cpp crypto_tests.cpp blockchain_tests.cpp
-  validation_tests.cpp supply_tests.cpp amount_tests.cpp wallet_tests.cpp)
+  validation_tests.cpp supply_tests.cpp amount_tests.cpp wallet_tests.cpp transaction_tests.cpp)
 target_include_directories(corecoin-tests PRIVATE "${PROJECT_SOURCE_DIR}/src")
 target_link_libraries(corecoin-tests PRIVATE corecoin GTest::gtest_main)
 add_test(NAME corecoin-tests COMMAND corecoin-tests)
