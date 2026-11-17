@@ -3,15 +3,12 @@
 #include <stdexcept>
 
 namespace corecoin::__tests {
-int wallet_tests() {
-    int count = 0;
-    const auto check = [&](bool result, const char* message) {
-        ++count;
-        if (!result) throw std::runtime_error(message);
-    };
-    Blockchain chain({1, 50 * gil_per_coin});
-    Wallet founder{std::string(initial_wallet_address)};
-    Wallet recipient("recipient");
+void wallet_tests(TestContext& context) {
+    auto check = [&](bool value, const char* message) { context.require(value, message); };
+    WalletFixture fixture;
+    auto& chain = fixture.chain;
+    auto& founder = fixture.founder;
+    auto& recipient = fixture.recipient;
     check(founder.balance(chain) == 11'000 * gil_per_coin, "Initial wallet must have exactly 11000 CORE");
     check(chain.blocks().front().transactions().size() == 1, "Genesis commits to allocation");
     check(chain.validate(), "Funded genesis validates");
@@ -43,6 +40,5 @@ int wallet_tests() {
     try { Wallet invalid("invalid address"); }
     catch (const std::invalid_argument&) { rejected = true; }
     check(rejected, "Reject invalid wallet address");
-    return count;
 }
 }

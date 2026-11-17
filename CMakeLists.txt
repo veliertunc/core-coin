@@ -20,7 +20,9 @@ target_link_libraries(corecoin-cli PRIVATE corecoin)
 
 include(CTest)
 if(BUILD_TESTING)
-  add_executable(corecoin-tests tests/blockchain_tests.cpp tests/wallet_tests.cpp)
+  add_executable(corecoin-tests tests/test_main.cpp tests/fixtures.cpp
+    tests/crypto_tests.cpp tests/blockchain_tests.cpp tests/validation_tests.cpp
+    tests/supply_tests.cpp tests/amount_tests.cpp tests/wallet_tests.cpp)
   target_link_libraries(corecoin-tests PRIVATE corecoin)
   # Tests may inspect private modules; consumers inherit only public headers.
   target_include_directories(corecoin-tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")

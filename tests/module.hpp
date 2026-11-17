@@ -1,4 +1,4 @@
 #pragma once
-namespace corecoin::__tests {
-int wallet_tests();
-}
+#include "test_context.hpp"
+#include "test_suites.hpp"
+#include "fixtures.hpp"

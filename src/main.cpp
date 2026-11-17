@@ -35,7 +35,7 @@ void shell(const std::string& path) {
     Wallet active{std::string(initial_wallet_address)};
     std::cout << "CoreCoin local shell (persistent chain, unsigned accounts)\n"
                  "wallet ADDRESS | receive | send TO GIL | balance [ADDRESS]\n"
-                 "mine ACCOUNT | chain | validate | quit\n"
+                 "send-core TO CORE | history [ADDRESS] | mine ACCOUNT | chain | validate | quit\n"
                  "Legacy send FROM TO GIL is also supported.\n"
                  "100000000 Gil = 1 CORE. Mine after sending to confirm transfers.\n"
               << "Selected wallet: " << active.address() << " | " << format_amount(active.balance(chain)) << '\n';
@@ -66,6 +66,27 @@ void shell(const std::string& path) {
                 store.save(candidate);
                 chain = std::move(candidate);
                 std::cout << "Mined " << hash << '\n';
+            } else if (command == "history") {
+                if (!(input >> a)) a = active.address();
+                if (input >> extra) throw std::invalid_argument("Expected at most one address");
+                const Wallet wallet(a);
+                for (const auto& block : chain.blocks()) {
+                    for (const auto& tx : block.transactions()) {
+                        if (tx.sender() == a || tx.recipient() == a)
+                            std::cout << "Confirmed block " << block.height() << " " << tx.id() << " "
+                                      << (tx.sender().empty() ? "issuance" : tx.sender()) << " -> "
+                                      << tx.recipient() << " " << format_amount(tx.amount()) << '\n';
+                    }
+                }
+                for (const auto& tx : chain.pending()) {
+                    if (tx.sender() == a || tx.recipient() == a)
+                        std::cout << "Pending " << tx.id() << " " << tx.sender() << " -> "
+                                  << tx.recipient() << " " << format_amount(tx.amount()) << '\n';
+                }
+            } else if (command == "send-core") {
+                if (!(input >> a >> b) || (input >> extra)) throw std::invalid_argument("Expected TO CORE");
+                const auto id = active.send(chain, a, parse_core_amount(b));
+                std::cout << "Queued " << id << " (mine to confirm)\n";
             } else if (command == "send") {
                 if (!(input >> a >> b)) throw std::invalid_argument("Expected TO integer Gil");
                 std::string sender = active.address(), recipient = a, value = b;

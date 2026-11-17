@@ -81,7 +81,7 @@ this allocation. Opening or selecting a wallet never mints more coins.
 
 The default `--demo` sends 12 CORE from founder to Bob, then 2 CORE back to
 founder, mining each transfer for `miner`. Final balances are founder
-10,990 CORE, Bob 10 CORE, and miner 100 CORE.
+10,990 CORE, Bob 10 CORE, and miner 22 CORE.
 
 In `--shell`, enter:
 
@@ -111,6 +111,8 @@ wallet's address to share with the sender; receiving does not mint coins.
 form also works. `balance` shows confirmed and pending-adjusted balances;
 `balance ADDRESS` inspects a specific wallet.
 
+`send-core TO CORE` accepts decimal CORE amounts with up to eight decimal places.
+`history [ADDRESS]` displays confirmed and pending transactions for an account.
 Amounts in `send` are integer Gil; for example, `send bob 1` sends 1 Gil.
 Transfers become confirmed after mining. The shell saves confirmed blocks to `corecoin.chain` and validates them on restart.
 Pass a different path with `--shell PATH`. Pending transactions are held in memory
@@ -152,7 +154,7 @@ so typed constants and `#pragma once` avoid reserved macro names.
 - The internal `ChainValidator` independently replays every block from a fixed genesis anchor,
   checking hashes, proof of work, links, heights, timestamps, transaction rules,
   reward amounts, and overflow. Rewards are applied after transfers.
-- `ChainConfig` sets fixed difficulty (1–4, default 3) and reward (default 50 CORE).
+- `ChainConfig` sets fixed difficulty (1–4, default 3) and reward (default 11 CORE).
   Each mining call has a 10-million-hash attempt limit. Total issuance is capped
   at 11,000,000 CORE, including the founder allocation. The final reward is reduced
   to the remaining supply, and later blocks carry a zero reward. There is no halving.
