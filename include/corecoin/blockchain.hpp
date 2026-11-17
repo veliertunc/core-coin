@@ -72,6 +72,7 @@ private:
     std::vector<Block> blocks_;
     std::vector<Transaction> pending_;
     Ledger confirmed_, projected_;
+    Amount issued_ = 0;
 };
 
 }

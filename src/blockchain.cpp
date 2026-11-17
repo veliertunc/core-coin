@@ -59,6 +59,7 @@ Blockchain::Blockchain(ChainConfig config) : config_(config) {
     __detail::check_config(config_);
     blocks_.push_back(__detail::genesis());
     credit(confirmed_, std::string(initial_wallet_address), initial_wallet_allocation);
+    issued_ = initial_wallet_allocation;
     projected_ = confirmed_;
 }
 void Blockchain::credit(Ledger& ledger, const std::string& account, Amount amount) {
@@ -90,10 +91,12 @@ void Blockchain::submit(Transaction transaction) {
 }
 const Block& Blockchain::mine_pending(const std::string& miner) {
     auto candidate = projected_;
-    credit(candidate, miner, config_.mining_reward);
+    if (!__detail::valid_account(miner)) throw std::invalid_argument("Invalid miner");
+    const Amount reward = std::min(config_.mining_reward, maximum_supply - issued_);
+    if (reward > 0) credit(candidate, miner, reward);
     auto transactions = pending_;
     // Empty sender denotes coinbase; transfers cannot use it. Height prevents identical rewards.
-    transactions.emplace_back("", miner, config_.mining_reward, blocks_.size());
+    transactions.emplace_back("", miner, reward, blocks_.size());
     const auto now = std::chrono::duration_cast<std::chrono::seconds>(
         std::chrono::system_clock::now().time_since_epoch()).count();
     Block block(blocks_.size(), blocks_.back().hash(), std::max<std::int64_t>(now, blocks_.back().timestamp()),
@@ -101,6 +104,7 @@ const Block& Blockchain::mine_pending(const std::string& miner) {
     block.mine();
     auto projected = candidate;
     blocks_.push_back(std::move(block));
+    issued_ += reward;
     confirmed_.swap(candidate);
     projected_.swap(projected);
     pending_.clear();
@@ -126,6 +130,7 @@ bool Blockchain::validate_chain(const std::vector<Block>& blocks, ChainConfig co
             throw std::invalid_argument("Invalid genesis block");
         Ledger ledger;
         credit(ledger, std::string(initial_wallet_address), initial_wallet_allocation);
+        Amount issued = initial_wallet_allocation;
         for (std::size_t i = 1; i < blocks.size(); ++i) {
             const auto& block = blocks[i];
             if (block.height() != i || block.previous_hash() != blocks[i-1].hash() ||
@@ -135,9 +140,12 @@ bool Blockchain::validate_chain(const std::vector<Block>& blocks, ChainConfig co
             if (txs.empty() || txs.size() > 1001) throw std::invalid_argument("Invalid block transaction count");
             for (std::size_t j = 0; j + 1 < txs.size(); ++j) apply_transfer(ledger, txs[j]);
             const auto& reward = txs.back();
-            if (!reward.sender().empty() || reward.amount() != config.mining_reward || reward.nonce() != i)
+            const Amount expected_reward = std::min(config.mining_reward, maximum_supply - issued);
+            if (!reward.sender().empty() || !__detail::valid_account(reward.recipient()) ||
+                reward.amount() != expected_reward || reward.nonce() != i)
                 throw std::invalid_argument("Invalid mining reward");
-            credit(ledger, reward.recipient(), reward.amount());
+            if (expected_reward > 0) credit(ledger, reward.recipient(), expected_reward);
+            issued += expected_reward;
         }
         if (error) error->clear();
         return true;

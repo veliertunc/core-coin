@@ -76,8 +76,14 @@ void tests() {
     require(!Blockchain::validate_chain({}, {1, 50}), "Reject empty chain");
     Blockchain large({1, std::numeric_limits<Amount>::max()});
     large.mine_pending("alice");
-    rejects([&] { large.mine_pending("alice"); }, "Reject balance overflow");
-    require(large.blocks().size() == 2 && large.validate(), "Overflow leaves state intact");
+    require(large.balance("alice") == maximum_supply - initial_wallet_allocation, "Reward capped at remaining supply");
+    large.mine_pending("alice");
+    require(large.blocks().back().transactions().back().amount() == 0 && large.validate(), "Mining continues without rewards at cap");
+    auto over_cap = large.blocks();
+    Block inflated(2, over_cap[1].hash(), over_cap[2].timestamp(), 1, {Transaction("", "alice", 1, 2)});
+    inflated.mine();
+    over_cap[2] = std::move(inflated);
+    require(!Blockchain::validate_chain(over_cap, {1, std::numeric_limits<Amount>::max()}), "Reject issuance above cap");
     require(format_amount(1) == "0.00000001 CORE", "One Gil formatting");
     require(format_amount(std::numeric_limits<Amount>::min()) == "-92233720368.54775808 CORE", "Signed minimum formatting");
 }

@@ -152,8 +152,10 @@ so typed constants and `#pragma once` avoid reserved macro names.
   checking hashes, proof of work, links, heights, timestamps, transaction rules,
   reward amounts, and overflow. Rewards are applied after transfers.
 - `ChainConfig` sets fixed difficulty (1–4, default 3) and reward (default 50 CORE).
-  Each mining call has a 10-million-hash attempt limit. There is no halving or
-  total supply cap. Genesis is a fixed unmined anchor committing to the founder's
+  Each mining call has a 10-million-hash attempt limit. Total issuance is capped
+  at 11,000,000 CORE, including the founder allocation. The final reward is reduced
+  to the remaining supply, and later blocks carry a zero reward. There is no halving.
+  Genesis is a fixed unmined anchor committing to the founder's
   11,000 CORE allocation. Validation replays that allocation before transfers;
   it rejects any different genesis allocation. This changes the genesis hash
   from the earlier empty-genesis prototype.
