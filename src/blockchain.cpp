@@ -12,10 +12,6 @@ namespace __detail {
 std::string field(std::string_view value) {
     return std::to_string(value.size()) + ":" + std::string(value);
 }
-void check_config(ChainConfig config) {
-    if (config.difficulty < 1 || config.difficulty > 4 || config.mining_reward <= 0)
-        throw std::invalid_argument("Difficulty must be 1..4 and mining reward must be positive");
-}
 }
 
 Transaction::Transaction(std::string sender, std::string recipient, Amount amount, std::uint64_t nonce)
@@ -58,34 +54,14 @@ void Block::mine(std::uint64_t max_attempts) {
 Blockchain::Blockchain(ChainConfig config) : config_(config) {
     __detail::check_config(config_);
     blocks_.push_back(__detail::genesis());
-    credit(confirmed_, std::string(initial_wallet_address), initial_wallet_allocation);
+    confirmed_.credit(std::string(initial_wallet_address), initial_wallet_allocation);
     issued_ = initial_wallet_allocation;
     projected_ = confirmed_;
-}
-void Blockchain::credit(Ledger& ledger, const std::string& account, Amount amount) {
-    if (!__detail::valid_account(account) || amount <= 0) throw std::invalid_argument("Invalid recipient or amount");
-    auto& target = ledger[account];
-    if (target.balance > std::numeric_limits<Amount>::max() - amount)
-        throw std::overflow_error("Balance overflow");
-    target.balance += amount;
-}
-void Blockchain::apply_transfer(Ledger& ledger, const Transaction& tx) {
-    if (!__detail::valid_account(tx.sender()) || !__detail::valid_account(tx.recipient()) || tx.sender() == tx.recipient())
-        throw std::invalid_argument("Transfer requires two distinct valid accounts");
-    if (tx.amount() <= 0) throw std::invalid_argument("Amount must be positive");
-    auto& sender = ledger[tx.sender()];
-    if (sender.nonce != tx.nonce()) throw std::invalid_argument("Incorrect transaction nonce");
-    if (sender.nonce == std::numeric_limits<std::uint64_t>::max())
-        throw std::overflow_error("Account nonce exhausted");
-    if (sender.balance < tx.amount()) throw std::invalid_argument("Insufficient balance");
-    credit(ledger, tx.recipient(), tx.amount());
-    sender.balance -= tx.amount();
-    ++sender.nonce;
 }
 void Blockchain::submit(Transaction transaction) {
     if (pending_.size() >= 1000) throw std::length_error("Pending transaction limit reached");
     auto candidate = projected_;
-    apply_transfer(candidate, transaction);
+    candidate.apply_transfer(transaction);
     pending_.push_back(std::move(transaction));
     projected_.swap(candidate);
 }
@@ -93,7 +69,7 @@ const Block& Blockchain::mine_pending(const std::string& miner) {
     auto candidate = projected_;
     if (!__detail::valid_account(miner)) throw std::invalid_argument("Invalid miner");
     const Amount reward = std::min(config_.mining_reward, maximum_supply - issued_);
-    if (reward > 0) credit(candidate, miner, reward);
+    if (reward > 0) candidate.credit(miner, reward);
     auto transactions = pending_;
     // Empty sender denotes coinbase; transfers cannot use it. Height prevents identical rewards.
     transactions.emplace_back("", miner, reward, blocks_.size());
@@ -110,48 +86,11 @@ const Block& Blockchain::mine_pending(const std::string& miner) {
     pending_.clear();
     return blocks_.back();
 }
-Amount Blockchain::balance(const std::string& account) const {
-    const auto it = confirmed_.find(account);
-    return it == confirmed_.end() ? 0 : it->second.balance;
-}
-Amount Blockchain::available_balance(const std::string& account) const {
-    const auto it = projected_.find(account);
-    return it == projected_.end() ? 0 : it->second.balance;
-}
-std::uint64_t Blockchain::next_nonce(const std::string& account) const {
-    const auto it = projected_.find(account);
-    return it == projected_.end() ? 0 : it->second.nonce;
-}
+Amount Blockchain::balance(const std::string& account) const { return confirmed_.balance(account); }
+Amount Blockchain::available_balance(const std::string& account) const { return projected_.balance(account); }
+std::uint64_t Blockchain::next_nonce(const std::string& account) const { return projected_.next_nonce(account); }
 bool Blockchain::validate(std::string* error) const { return validate_chain(blocks_, config_, error); }
 bool Blockchain::validate_chain(const std::vector<Block>& blocks, ChainConfig config, std::string* error) {
-    try {
-        __detail::check_config(config);
-        if (blocks.empty() || blocks.front().hash() != __detail::genesis().hash() || !blocks.front().has_valid_proof())
-            throw std::invalid_argument("Invalid genesis block");
-        Ledger ledger;
-        credit(ledger, std::string(initial_wallet_address), initial_wallet_allocation);
-        Amount issued = initial_wallet_allocation;
-        for (std::size_t i = 1; i < blocks.size(); ++i) {
-            const auto& block = blocks[i];
-            if (block.height() != i || block.previous_hash() != blocks[i-1].hash() ||
-                block.timestamp() < blocks[i-1].timestamp() || block.difficulty() != config.difficulty ||
-                !block.has_valid_proof()) throw std::invalid_argument("Invalid block header or proof of work");
-            const auto& txs = block.transactions();
-            if (txs.empty() || txs.size() > 1001) throw std::invalid_argument("Invalid block transaction count");
-            for (std::size_t j = 0; j + 1 < txs.size(); ++j) apply_transfer(ledger, txs[j]);
-            const auto& reward = txs.back();
-            const Amount expected_reward = std::min(config.mining_reward, maximum_supply - issued);
-            if (!reward.sender().empty() || !__detail::valid_account(reward.recipient()) ||
-                reward.amount() != expected_reward || reward.nonce() != i)
-                throw std::invalid_argument("Invalid mining reward");
-            if (expected_reward > 0) credit(ledger, reward.recipient(), expected_reward);
-            issued += expected_reward;
-        }
-        if (error) error->clear();
-        return true;
-    } catch (const std::exception& ex) {
-        if (error) *error = ex.what();
-        return false;
-    }
+    return __detail::ChainValidator::validate(blocks, config, error);
 }
 }

@@ -145,10 +145,11 @@ so typed constants and `#pragma once` avoid reserved macro names.
   in separate components. The wallet does not mine or print output.
 - `Block` commits to its height, previous hash, timestamp, difficulty, nonce,
   and ordered transactions. Mining searches for leading hexadecimal zeroes.
+- `Ledger` owns account balances and nonces and applies transfer rules.
 - `Blockchain` owns the chain, pending pool, and confirmed/projected ledgers.
   Submission checks pending balances to prevent double spending and nonces to
   prevent replay. A block contains at most 1,000 transfers and one final reward.
-- Validation independently replays every block from a fixed genesis anchor,
+- The internal `ChainValidator` independently replays every block from a fixed genesis anchor,
   checking hashes, proof of work, links, heights, timestamps, transaction rules,
   reward amounts, and overflow. Rewards are applied after transfers.
 - `ChainConfig` sets fixed difficulty (1–4, default 3) and reward (default 50 CORE).

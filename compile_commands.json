@@ -64,6 +64,27 @@
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_validator.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_validator.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_validator.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_validator.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
     "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/genesis.cpp",
     "arguments": [
       "/usr/bin/g++",
@@ -82,6 +103,27 @@
       "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-genesis.cpp.o"
     ],
     "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-genesis.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",

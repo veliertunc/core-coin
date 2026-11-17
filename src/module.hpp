@@ -5,3 +5,4 @@
 #include "sha256.hpp"
 #include "address.hpp"
 #include "genesis.hpp"
+#include "chain_validator.hpp"

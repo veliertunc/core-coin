@@ -1,7 +1,7 @@
 #pragma once
 #include "amount.hpp"
+#include "ledger.hpp"
 #include <cstdint>
-#include <map>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -46,7 +46,7 @@ private:
 
 struct ChainConfig {
     unsigned difficulty = 3; // Number of leading zero hexadecimal digits; demo range 1..4.
-    Amount mining_reward = 50 * gil_per_coin;
+    Amount mining_reward = 11 * gil_per_coin;
 };
 
 class Blockchain {
@@ -64,10 +64,6 @@ public:
     [[nodiscard]] const std::vector<Block>& blocks() const noexcept { return blocks_; }
     [[nodiscard]] const std::vector<Transaction>& pending() const noexcept { return pending_; }
 private:
-    struct Account { Amount balance = 0; std::uint64_t nonce = 0; };
-    using Ledger = std::map<std::string, Account>;
-    static void apply_transfer(Ledger& ledger, const Transaction& transaction);
-    static void credit(Ledger& ledger, const std::string& account, Amount amount);
     ChainConfig config_;
     std::vector<Block> blocks_;
     std::vector<Transaction> pending_;
