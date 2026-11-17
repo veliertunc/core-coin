@@ -1,0 +1,8 @@
+{
+  "cmake.configureOnOpen": false,
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}",
+    "--query-driver=/usr/bin/g++,/usr/bin/clang++"
+  ],
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json"
+}
