@@ -1,4 +1,5 @@
 """Exercise wallet commands through the actual interactive CLI."""
+import re
 import subprocess
 import sys
 import tempfile
@@ -75,3 +76,26 @@ after = shell(str(failed_file), "balance bob\nquit\n")
 if after.returncode or "Confirmed: 0.00000000 CORE" not in after.stdout:
     raise RuntimeError(after.stdout + after.stderr)
 print("Decimal history, pending restart, and save recovery checks passed")
+
+# Create a key-backed wallet, fund it, and spend with both shell send forms.
+secure_chain = str(Path(temp.name) / "secure.dat")
+key_file = str(Path(temp.name) / "secure.pem")
+password = "correct horse battery staple"
+created = shell(secure_chain, f"wallet-create {key_file}\n{password}\n{password}\nreceive\nquit\n")
+match = re.search(r"Receive address: (cc_[0-9a-f]{64})", created.stdout)
+if created.returncode or not match or "Error:" in created.stdout:
+    raise RuntimeError(created.stdout + created.stderr)
+address = match.group(1)
+fund = shell(secure_chain, f"send-core {address} 3\nmine miner\nquit\n")
+if fund.returncode or "Error:" in fund.stdout:
+    raise RuntimeError(fund.stdout + fund.stderr)
+spend = shell(secure_chain, f"wallet-open {key_file}\n{password}\nsend bob 100000000\nsend-core bob 1\nmine miner\nvalidate\nquit\n")
+if spend.returncode or "Error:" in spend.stdout or spend.stdout.count("Queued ") != 2 or "> Valid" not in spend.stdout:
+    raise RuntimeError(spend.stdout + spend.stderr)
+check = shell(secure_chain, f"wallet-open {key_file}\n{password}\nbalance\nbalance bob\nquit\n")
+if check.returncode or "Confirmed: 1.00000000 CORE" not in check.stdout or "Confirmed: 2.00000000 CORE" not in check.stdout:
+    raise RuntimeError(check.stdout + check.stderr)
+wrong = shell(secure_chain, f"wallet-open {key_file}\nincorrect horse battery staple\nreceive\nquit\n")
+if "Error:" not in wrong.stdout or "Receive address: founder" not in wrong.stdout:
+    raise RuntimeError(wrong.stdout + wrong.stderr)
+print("Encrypted shell wallet send and reload passed")

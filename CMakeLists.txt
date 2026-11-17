@@ -18,7 +18,7 @@ else()
   target_compile_options(corecoin PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-add_executable(corecoin-cli src/main.cpp)
+add_executable(corecoin-cli src/main.cpp src/cli_password.cpp)
 target_link_libraries(corecoin-cli PRIVATE corecoin)
 
 include(CTest)

@@ -22,16 +22,16 @@ def main():
         parser.error(f"Compiler {args.compiler!r} not found. Run in Ubuntu WSL or select --compiler.")
     build = args.build_dir.resolve()
     build.mkdir(parents=True, exist_ok=True)
-    library = sorted(p for p in (ROOT / "src").glob("*.cpp") if p.name != "main.cpp")
-    app = ROOT / "src/main.cpp"
+    library = sorted(p for p in (ROOT / "src").glob("*.cpp") if p.name not in {"main.cpp", "cli_password.cpp"})
+    app = [ROOT / "src/main.cpp", ROOT / "src/cli_password.cpp"]
     tests = sorted((ROOT / "tests").glob("*.cpp"))
     commands = []
     objects = {}
-    for source in [*library, app, *tests]:
+    for source in [*library, *app, *tests]:
         obj = build / (source.relative_to(ROOT).as_posix().replace("/", "-") + ".o")
         flags = [compiler, "-std=c++23", "-O2", "-Wall", "-Wextra", "-Wpedantic",
                  "-I", str(ROOT / "include")]
-        if source != app:
+        if source not in app:
             flags += ["-I", str(ROOT / "src")]
         command = flags + ["-c", str(source), "-o", str(obj)]
         commands.append({"directory": str(ROOT), "file": str(source),
@@ -58,7 +58,7 @@ def main():
             subprocess.run(entry["arguments"], cwd=ROOT, check=True)
             signature.write_text(command_text)
     suffix = ".exe" if os.name == "nt" else ""
-    for name, sources in [("corecoin-cli", [*library, app]), ("corecoin-tests", [*library, *tests])]:
+    for name, sources in [("corecoin-cli", [*library, *app]), ("corecoin-tests", [*library, *tests])]:
         subprocess.run([compiler, *[str(objects[p]) for p in sources], "-o", str(build / (name + suffix)), "-lcrypto"],
                        cwd=ROOT, check=True)
     if args.test:

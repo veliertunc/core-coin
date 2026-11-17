@@ -1,5 +1,8 @@
 #include "corecoin/module.hpp"
+#include "cli_password.hpp"
+#include <openssl/crypto.h>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <stdexcept>
 #include <charconv>
@@ -34,8 +37,8 @@ void shell(const std::string& path) {
     Blockchain chain = store.exists() ? store.load() : Blockchain{};
     if (!store.exists()) store.save(chain);
     Wallet active{std::string(initial_wallet_address)};
-    std::cout << "CoreCoin local shell (persistent chain, unsigned accounts)\n"
-                 "wallet ADDRESS | receive | send TO GIL | balance [ADDRESS]\n"
+    std::cout << "CoreCoin local shell (persistent chain; named accounts are unsigned)\n"
+                 "wallet ADDRESS | wallet-create FILE | wallet-open FILE | receive | send TO GIL | balance [ADDRESS]\n"
                  "send-core TO CORE | history [ADDRESS] | mine ACCOUNT | chain | validate | quit\n"
                  "Legacy send FROM TO GIL is also supported.\n"
                  "100000000 Gil = 1 CORE. Mine after sending to confirm transfers.\n"
@@ -47,7 +50,21 @@ void shell(const std::string& path) {
             input >> command;
             if (command.empty()) continue;
             if (command == "quit") break;
-            if (command == "wallet") {
+            if (command == "wallet-create" || command == "wallet-open") {
+                if (!(input >> std::quoted(a)) || (input >> extra)) throw std::invalid_argument("Expected wallet file path");
+                auto password = read_password("Wallet password: ");
+                struct PasswordCleanup { std::string& value; ~PasswordCleanup() { OPENSSL_cleanse(value.data(), value.size()); } } cleanup{password};
+                if (command == "wallet-create") {
+                    auto confirmation = read_password("Confirm password: ");
+                    PasswordCleanup confirmation_cleanup{confirmation};
+                    if (password != confirmation) throw std::invalid_argument("Passwords do not match");
+                    auto key = SigningKey::generate();
+                    key.save(a, password);
+                    active = Wallet(std::move(key));
+                    std::cout << "Created encrypted wallet. Back up its file and password separately.\n";
+                } else active = Wallet(SigningKey::load(a, password));
+                std::cout << "Selected wallet: " << active.address() << " | " << format_amount(active.balance(chain)) << '\n';
+            } else if (command == "wallet") {
                 if (!(input >> a) || (input >> extra)) throw std::invalid_argument("Expected wallet address");
                 active = Wallet(a);
                 std::cout << "Selected wallet: " << active.address() << " | " << format_amount(active.balance(chain)) << '\n';
@@ -91,13 +108,14 @@ void shell(const std::string& path) {
             } else if (command == "send") {
                 if (!(input >> a >> b)) throw std::invalid_argument("Expected TO integer Gil");
                 std::string sender = active.address(), recipient = a, value = b;
-                if (input >> extra) { sender = a; recipient = b; value = extra; }
+                bool explicit_sender = false;
+                if (input >> extra) { sender = a; recipient = b; value = extra; explicit_sender = true; }
                 if (input >> extra) throw std::invalid_argument("Too many send arguments");
                 Amount amount{};
                 const auto [end, error] = std::from_chars(value.data(), value.data() + value.size(), amount);
                 if (error != std::errc{} || end != value.data() + value.size())
                     throw std::invalid_argument("Amount must be integer Gil");
-                const auto id = Wallet(sender).send(chain, recipient, amount);
+                const auto id = explicit_sender ? Wallet(sender).send(chain, recipient, amount) : active.send(chain, recipient, amount);
                 std::cout << "Queued " << id << " (mine to confirm)\n";
             } else if (command == "chain") print_chain(chain);
             else if (command == "validate") {

@@ -230,6 +230,25 @@
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli_password.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli_password.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli_password.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli_password.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
     "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/amount_tests.cpp",
     "arguments": [
       "/usr/bin/g++",

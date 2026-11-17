@@ -113,6 +113,14 @@ form also works. `balance` shows confirmed and pending-adjusted balances;
 
 `send-core TO CORE` accepts decimal CORE amounts with up to eight decimal places.
 `history [ADDRESS]` displays confirmed and pending transactions for an account.
+Use `wallet-create FILE` to create and select an encrypted key-backed wallet;
+enter a password of at least 12 characters at the prompt. Use `receive` to get
+its address. From the founder wallet, send to that address and mine the transfer;
+then use `wallet-open FILE` and the password to select it and send signed transfers.
+Quote paths containing spaces. Back up the encrypted file and keep the password
+separately: neither can be recovered if lost. Password input is hidden on a terminal;
+redirected input is not protected from the process supplying it.
+
 Amounts in `send` are integer Gil; for example, `send bob 1` sends 1 Gil.
 Transfers become confirmed after mining. The shell saves confirmed blocks to `corecoin.chain` and validates them on restart.
 Pass a different path with `--shell PATH`. If an interrupted save leaves only a
@@ -151,8 +159,7 @@ so typed constants and `#pragma once` avoid reserved macro names.
   stores keys in password-encrypted PKCS#8 files. Back up the encrypted file and
   keep its password separately; losing either prevents recovery. Construct a
   `Wallet` from a `SigningKey` to sign transfers from its `cc_` address.
-  The ledger verifies signatures during submission and chain replay. The shell
-  currently supports named accounts only; use the library for key-backed wallets.
+  The ledger verifies signatures during submission and chain replay.
 - `Block` commits to its height, previous hash, timestamp, difficulty, nonce,
   and ordered transactions. Mining searches for leading hexadecimal zeroes.
 - `Ledger` owns account balances and nonces and applies transfer rules.
