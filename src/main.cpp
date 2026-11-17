@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <charconv>
 
 namespace corecoin::__cli {
 void print_chain(const Blockchain& chain) {
@@ -13,12 +14,15 @@ void print_chain(const Blockchain& chain) {
 }
 void demo() {
     Blockchain chain;
-    std::cout << "CoreCoin: local C++23 proof-of-work demo\n";
-    chain.mine_pending("alice");
-    chain.submit(Transaction("alice", "bob", 12 * gil_per_coin, chain.next_nonce("alice")));
+    Wallet founder{std::string(initial_wallet_address)};
+    Wallet bob("bob");
+    std::cout << "CoreCoin: founder wallet starts with " << format_amount(founder.balance(chain)) << '\n';
+    founder.send(chain, bob.address(), 12 * gil_per_coin);
+    chain.mine_pending("miner");
+    bob.send(chain, founder.address(), 2 * gil_per_coin);
     chain.mine_pending("miner");
     print_chain(chain);
-    for (const auto* name : {"alice", "bob", "miner"})
+    for (const auto* name : {"founder", "bob", "miner"})
         std::cout << name << ": " << format_amount(chain.balance(name)) << '\n';
     std::string error;
     if (!chain.validate(&error)) throw std::runtime_error(error);
@@ -26,9 +30,13 @@ void demo() {
 }
 void shell() {
     Blockchain chain;
+    Wallet active{std::string(initial_wallet_address)};
     std::cout << "CoreCoin local shell (in-memory, unsigned accounts)\n"
-                 "mine ACCOUNT | send FROM TO GIL | balance ACCOUNT | chain | validate | quit\n"
-                 "100000000 Gil = 1 CORE. Mine first to fund an account.\n";
+                 "wallet ADDRESS | receive | send TO GIL | balance [ADDRESS]\n"
+                 "mine ACCOUNT | chain | validate | quit\n"
+                 "Legacy send FROM TO GIL is also supported.\n"
+                 "100000000 Gil = 1 CORE. Mine after sending to confirm transfers.\n"
+              << "Selected wallet: " << active.address() << " | " << format_amount(active.balance(chain)) << '\n';
     for (std::string line; std::cout << "> " && std::getline(std::cin, line);) {
         try {
             std::istringstream input(line);
@@ -36,17 +44,33 @@ void shell() {
             input >> command;
             if (command.empty()) continue;
             if (command == "quit") break;
-            if (command == "mine" || command == "balance") {
+            if (command == "wallet") {
+                if (!(input >> a) || (input >> extra)) throw std::invalid_argument("Expected wallet address");
+                active = Wallet(a);
+                std::cout << "Selected wallet: " << active.address() << " | " << format_amount(active.balance(chain)) << '\n';
+            } else if (command == "receive" || command == "address") {
+                if (input >> extra) throw std::invalid_argument("Receive takes no arguments");
+                std::cout << "Receive address: " << active.address() << " (share with sender; mine to confirm)\n";
+            } else if (command == "balance") {
+                if (!(input >> a)) a = active.address();
+                if (input >> extra) throw std::invalid_argument("Expected at most one address");
+                const Wallet wallet(a);
+                std::cout << "Confirmed: " << format_amount(wallet.balance(chain))
+                          << " | Including pending: " << format_amount(wallet.available_balance(chain)) << '\n';
+            } else if (command == "mine") {
                 if (!(input >> a) || (input >> extra)) throw std::invalid_argument("Expected one account");
-                if (command == "mine") std::cout << "Mined " << chain.mine_pending(a).hash() << '\n';
-                else std::cout << format_amount(chain.balance(a)) << '\n';
+                std::cout << "Mined " << chain.mine_pending(a).hash() << '\n';
             } else if (command == "send") {
+                if (!(input >> a >> b)) throw std::invalid_argument("Expected TO integer Gil");
+                std::string sender = active.address(), recipient = a, value = b;
+                if (input >> extra) { sender = a; recipient = b; value = extra; }
+                if (input >> extra) throw std::invalid_argument("Too many send arguments");
                 Amount amount{};
-                if (!(input >> a >> b >> amount) || (input >> extra))
-                    throw std::invalid_argument("Expected FROM TO integer Gil");
-                Transaction tx(a, b, amount, chain.next_nonce(a));
-                chain.submit(tx);
-                std::cout << "Queued " << tx.id() << " (mine to confirm)\n";
+                const auto [end, error] = std::from_chars(value.data(), value.data() + value.size(), amount);
+                if (error != std::errc{} || end != value.data() + value.size())
+                    throw std::invalid_argument("Amount must be integer Gil");
+                const auto id = Wallet(sender).send(chain, recipient, amount);
+                std::cout << "Queued " << id << " (mine to confirm)\n";
             } else if (command == "chain") print_chain(chain);
             else if (command == "validate") {
                 std::string error;

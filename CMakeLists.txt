@@ -3,7 +3,8 @@ project(CoreCoin VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_library(corecoin src/sha256.cpp src/blockchain.cpp)
+add_library(corecoin src/sha256.cpp src/blockchain.cpp src/address.cpp src/genesis.cpp
+                     src/wallet.cpp src/amount.cpp)
 target_include_directories(corecoin PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
                                    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_compile_features(corecoin PUBLIC cxx_std_23)
@@ -19,11 +20,16 @@ target_link_libraries(corecoin-cli PRIVATE corecoin)
 
 include(CTest)
 if(BUILD_TESTING)
-  add_executable(corecoin-tests tests/blockchain_tests.cpp)
+  add_executable(corecoin-tests tests/blockchain_tests.cpp tests/wallet_tests.cpp)
   target_link_libraries(corecoin-tests PRIVATE corecoin)
   # Tests may inspect private modules; consumers inherit only public headers.
   target_include_directories(corecoin-tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
   add_test(NAME corecoin-tests COMMAND corecoin-tests)
+  find_package(Python3 COMPONENTS Interpreter QUIET)
+  if(Python3_Interpreter_FOUND)
+    add_test(NAME corecoin-cli-wallets COMMAND ${Python3_EXECUTABLE}
+      "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_tests.py" $<TARGET_FILE:corecoin-cli>)
+  endif()
 endif()
 
 if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")

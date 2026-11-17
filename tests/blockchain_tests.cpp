@@ -1,4 +1,5 @@
 #include "corecoin/module.hpp"
+#include "../src/module.hpp"
 #include "module.hpp"
 #include <iostream>
 #include <limits>
@@ -29,7 +30,7 @@ void tests() {
     rejects([] { Blockchain bad({1, 0}); }, "Reject zero reward");
     Blockchain chain({1, 50});
     require(chain.validate(), "Genesis validates");
-    require(chain.balance("alice") == 0, "No initial allocation");
+    require(chain.balance("alice") == 0, "Unfunded account starts empty");
     rejects([&] { chain.submit(Transaction("alice", "bob", 1, 0)); }, "Reject unfunded spend");
     chain.mine_pending("alice");
     require(chain.balance("alice") == 50, "Mining reward");
@@ -84,6 +85,7 @@ void tests() {
 int main() {
     try {
         corecoin::__tests::tests();
+        corecoin::__tests::checks += corecoin::__tests::wallet_tests();
         std::cout << corecoin::__tests::checks << " checks passed\n";
         return 0;
     } catch (const std::exception& ex) {

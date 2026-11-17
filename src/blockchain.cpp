@@ -1,4 +1,5 @@
 #include "corecoin/blockchain.hpp"
+#include "corecoin/network.hpp"
 #include "module.hpp"
 #include <algorithm>
 #include <chrono>
@@ -11,20 +12,9 @@ namespace __detail {
 std::string field(std::string_view value) {
     return std::to_string(value.size()) + ":" + std::string(value);
 }
-bool valid_account(std::string_view account) {
-    return !account.empty() && account.size() <= 64 &&
-        std::ranges::all_of(account, [](unsigned char c) {
-            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                   (c >= '0' && c <= '9') || c == '_' || c == '-';
-        });
-}
 void check_config(ChainConfig config) {
     if (config.difficulty < 1 || config.difficulty > 4 || config.mining_reward <= 0)
         throw std::invalid_argument("Difficulty must be 1..4 and mining reward must be positive");
-}
-Block genesis() {
-    // Fixed, unmined anchor. The complete header is checked during validation.
-    return Block(0, std::string(64, '0'), 0, 0, {});
 }
 }
 
@@ -68,6 +58,8 @@ void Block::mine(std::uint64_t max_attempts) {
 Blockchain::Blockchain(ChainConfig config) : config_(config) {
     __detail::check_config(config_);
     blocks_.push_back(__detail::genesis());
+    credit(confirmed_, std::string(initial_wallet_address), initial_wallet_allocation);
+    projected_ = confirmed_;
 }
 void Blockchain::credit(Ledger& ledger, const std::string& account, Amount amount) {
     if (!__detail::valid_account(account) || amount <= 0) throw std::invalid_argument("Invalid recipient or amount");
@@ -118,6 +110,10 @@ Amount Blockchain::balance(const std::string& account) const {
     const auto it = confirmed_.find(account);
     return it == confirmed_.end() ? 0 : it->second.balance;
 }
+Amount Blockchain::available_balance(const std::string& account) const {
+    const auto it = projected_.find(account);
+    return it == projected_.end() ? 0 : it->second.balance;
+}
 std::uint64_t Blockchain::next_nonce(const std::string& account) const {
     const auto it = projected_.find(account);
     return it == projected_.end() ? 0 : it->second.nonce;
@@ -129,6 +125,7 @@ bool Blockchain::validate_chain(const std::vector<Block>& blocks, ChainConfig co
         if (blocks.empty() || blocks.front().hash() != __detail::genesis().hash() || !blocks.front().has_valid_proof())
             throw std::invalid_argument("Invalid genesis block");
         Ledger ledger;
+        credit(ledger, std::string(initial_wallet_address), initial_wallet_allocation);
         for (std::size_t i = 1; i < blocks.size(); ++i) {
             const auto& block = blocks[i];
             if (block.height() != i || block.previous_hash() != blocks[i-1].hash() ||
@@ -148,13 +145,5 @@ bool Blockchain::validate_chain(const std::vector<Block>& blocks, ChainConfig co
         if (error) *error = ex.what();
         return false;
     }
-}
-std::string format_amount(Amount amount) {
-    // Unsigned arithmetic also handles the minimum signed 64-bit value.
-    const auto magnitude = amount < 0 ? std::uint64_t{0} - static_cast<std::uint64_t>(amount)
-                                      : static_cast<std::uint64_t>(amount);
-    auto fraction = std::to_string(magnitude % gil_per_coin);
-    return (amount < 0 ? "-" : "") + std::to_string(magnitude / gil_per_coin) + "." +
-           std::string(8 - fraction.size(), '0') + fraction + " CORE";
 }
 }

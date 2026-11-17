@@ -75,17 +75,27 @@ the Windows SDK, then select that compiler via **C/C++: Edit Configurations (UI)
 
 ### CLI
 
-The default `--demo` mines 50 CORE for Alice, sends 12 CORE to Bob, mines a
-second block for `miner`, and validates the chain. Final balances are Alice
-38 CORE, Bob 12 CORE, and miner 50 CORE.
+The initial wallet is **`founder`**, funded with **11,000 CORE**
+(1,100,000,000,000 Gil) in the fixed genesis block. Every new chain has exactly
+this allocation. Opening or selecting a wallet never mints more coins.
+
+The default `--demo` sends 12 CORE from founder to Bob, then 2 CORE back to
+founder, mining each transfer for `miner`. Final balances are founder
+10,990 CORE, Bob 10 CORE, and miner 100 CORE.
 
 In `--shell`, enter:
 
 ```text
-mine alice
-send alice bob 1200000000
+receive
+balance
+send bob 1000000000
 mine miner
-balance alice
+wallet bob
+receive
+balance
+send founder 100000000
+mine miner
+balance founder
 balance bob
 chain
 validate
@@ -94,9 +104,19 @@ quit
 
 CoreCoin's smallest indivisible unit is called **Gil**, like Bitcoin's satoshi:
 **1 CORE = 100,000,000 Gil**, and **1 Gil = 0.00000001 CORE**.
-Amounts in `send` are integer Gil; for example, `send alice bob 1` sends 1 Gil.
+The shell selects `founder` on startup. `wallet ADDRESS` selects another named
+wallet (an unused address starts at zero). `receive` displays the selected
+wallet's address to share with the sender; receiving does not mint coins.
+`send TO GIL` sends from the selected wallet. The legacy `send FROM TO GIL`
+form also works. `balance` shows confirmed and pending-adjusted balances;
+`balance ADDRESS` inspects a specific wallet.
+
+Amounts in `send` are integer Gil; for example, `send bob 1` sends 1 Gil.
 Transfers become confirmed after mining. All state is in memory and resets on
-exit. Names use 1–64 ASCII letters, digits, underscores, or hyphens.
+exit, including transaction history and wallet balances. Restarting starts a new
+chain with the original founder allocation. These addresses work only within
+the same local chain; there is no transfer between separate running processes.
+Names use 1–64 ASCII letters, digits, underscores, or hyphens.
 
 ## Design
 
@@ -120,6 +140,9 @@ so typed constants and `#pragma once` avoid reserved macro names.
 
 - `Transaction` encapsulates sender, recipient, amount, and sequential account
   nonce. Length-prefixed serialization produces deterministic SHA-256 IDs.
+- `Wallet` handles named account selection, querying balances, and submitting
+  transfers. Address checks, amount formatting, and genesis construction live
+  in separate components. The wallet does not mine or print output.
 - `Block` commits to its height, previous hash, timestamp, difficulty, nonce,
   and ordered transactions. Mining searches for leading hexadecimal zeroes.
 - `Blockchain` owns the chain, pending pool, and confirmed/projected ledgers.
@@ -130,7 +153,10 @@ so typed constants and `#pragma once` avoid reserved macro names.
   reward amounts, and overflow. Rewards are applied after transfers.
 - `ChainConfig` sets fixed difficulty (1–4, default 3) and reward (default 50 CORE).
   Each mining call has a 10-million-hash attempt limit. There is no halving or
-  total supply cap. Genesis has no allocation and is a fixed unmined anchor.
+  total supply cap. Genesis is a fixed unmined anchor committing to the founder's
+  11,000 CORE allocation. Validation replays that allocation before transfers;
+  it rejects any different genesis allocation. This changes the genesis hash
+  from the earlier empty-genesis prototype.
 
 The library exposes immutable views of chain data; mining and submission keep
 state unchanged on rejected operations. Pending incoming funds may be spent

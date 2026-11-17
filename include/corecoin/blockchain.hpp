@@ -1,4 +1,5 @@
 #pragma once
+#include "amount.hpp"
 #include <cstdint>
 #include <map>
 #include <string>
@@ -6,11 +7,6 @@
 #include <vector>
 
 namespace corecoin {
-// All ledger amounts are integer Gil, CoreCoin's smallest indivisible unit.
-using Amount = std::int64_t;
-inline constexpr Amount gil_per_coin = 100'000'000;
-inline constexpr Amount units_per_coin = gil_per_coin; // Backward-compatible alias.
-
 class Transaction {
 public:
     Transaction(std::string sender, std::string recipient, Amount amount, std::uint64_t nonce);
@@ -59,6 +55,7 @@ public:
     void submit(Transaction transaction);
     const Block& mine_pending(const std::string& miner);
     [[nodiscard]] Amount balance(const std::string& account) const;
+    [[nodiscard]] Amount available_balance(const std::string& account) const;
     // Includes queued transactions, allowing multiple sequential submissions.
     [[nodiscard]] std::uint64_t next_nonce(const std::string& account) const;
     [[nodiscard]] bool validate(std::string* error = nullptr) const;
@@ -77,5 +74,4 @@ private:
     Ledger confirmed_, projected_;
 };
 
-[[nodiscard]] std::string format_amount(Amount amount);
 }

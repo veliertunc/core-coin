@@ -1,6 +1,48 @@
 [
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/address.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/address.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-address.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-address.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/amount.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/amount.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-amount.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-amount.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
     "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/blockchain.cpp",
     "arguments": [
       "/usr/bin/g++",
@@ -22,6 +64,27 @@
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/genesis.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/genesis.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-genesis.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-genesis.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
     "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/sha256.cpp",
     "arguments": [
       "/usr/bin/g++",
@@ -40,6 +103,27 @@
       "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-sha256.cpp.o"
     ],
     "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-sha256.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/wallet.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/wallet.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-wallet.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-wallet.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
@@ -80,5 +164,26 @@
       "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-blockchain_tests.cpp.o"
     ],
     "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-blockchain_tests.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/wallet_tests.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/wallet_tests.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-wallet_tests.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-wallet_tests.cpp.o"
   }
 ]

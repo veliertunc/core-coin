@@ -46,7 +46,8 @@ def main():
     print(f"Updated compile_commands.json: {len(commands)} translation units", flush=True)
     if args.configure_only:
         return
-    headers = [*(ROOT / "include").rglob("*.hpp"), *(ROOT / "src").glob("*.hpp"), Path(__file__)]
+    headers = [*(ROOT / "include").rglob("*.hpp"), *(ROOT / "src").rglob("*.hpp"),
+               *(ROOT / "tests").rglob("*.hpp"), Path(__file__)]
     for entry in commands:
         obj = Path(entry["output"])
         signature = obj.with_suffix(".command.json")
@@ -62,6 +63,8 @@ def main():
                        cwd=ROOT, check=True)
     if args.test:
         subprocess.run([str(build / ("corecoin-tests" + suffix))], cwd=ROOT, check=True)
+        subprocess.run([sys.executable, str(ROOT / "tests/cli_tests.py"),
+                        str(build / ("corecoin-cli" + suffix))], cwd=ROOT, check=True)
 
 
 if __name__ == "__main__":
