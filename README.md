@@ -11,6 +11,12 @@ Requires OpenSSL 3 development headers and libcrypto, Python 3 (build script) or
 (for example Visual Studio 2022 with Desktop development with C++, GCC 13+, or
 Clang 17+ with an appropriate SDK).
 
+Initialize the pinned GoogleTest submodule before building the tests:
+
+```sh
+git submodule update --init --recursive
+```
+
 ```sh
 cmake -S . -B build
 cmake --build build --config Release
@@ -137,7 +143,7 @@ The public namespace is `corecoin`; private namespaces use a double underscore
 prefix: `corecoin::__detail`, `corecoin::__cli`, and `corecoin::__tests`.
 Namespace naming expresses an internal API convention, not language-enforced
 access control. Public headers live in `include/corecoin/`; private headers such
-as `src/sha256.hpp` stay out of the public include path. Filenames need no prefix.
+as `src/crypto/sha256.hpp` stay out of the public include path. Filenames need no prefix.
 Each API layer has a `module.hpp` index header, analogous to TypeScript's
 `index.ts`. Applications use `#include <corecoin/module.hpp>` to access the public
 classes and functions. Internal code and tests can include `src/module.hpp`
@@ -163,6 +169,9 @@ so typed constants and `#pragma once` avoid reserved macro names.
 - `Block` commits to its height, previous hash, timestamp, difficulty, nonce,
   and ordered transactions. Mining searches for leading hexadecimal zeroes.
 - `Ledger` owns account balances and nonces and applies transfer rules.
+- CMake builds the amount, cryptography, transaction, ledger, chain, wallet,
+  storage, and CLI input components as separate libraries. The `corecoin`
+  interface target gathers the public components for consumers.
 - `Blockchain` owns the chain, pending pool, and confirmed/projected ledgers.
   Submission checks pending balances to prevent double spending and nonces to
   prevent replay. A block contains at most 1,000 transfers and one final reward.
@@ -192,5 +201,5 @@ network, distributed consensus/fork selection, transaction fees,
 difficulty adjustment, or audited cryptography. Proof of work demonstrates
 local integrity checks; it does not by itself make this a secure currency.
 
-Tests cover standard SHA-256 vectors, transfers, pending double spends, replay,
+GoogleTest suites cover standard SHA-256 vectors, transfers, pending double spends, replay,
 invalid amounts/accounts, overflow, and forged blocks with recomputed proof of work.

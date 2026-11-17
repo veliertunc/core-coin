@@ -1,5 +1,5 @@
 #include "corecoin/module.hpp"
-#include "cli_password.hpp"
+#include "cli/password.hpp"
 #include <openssl/crypto.h>
 #include <iostream>
 #include <iomanip>

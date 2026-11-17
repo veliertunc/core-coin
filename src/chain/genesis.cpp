@@ -1,4 +1,4 @@
-#include "genesis.hpp"
+#include "chain/genesis.hpp"
 #include "corecoin/network.hpp"
 
 namespace corecoin::__detail {

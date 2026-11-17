@@ -1,8 +1,8 @@
 #include "module.hpp"
 #include <utility>
 namespace corecoin::__tests {
-void validation_tests(TestContext& context) {
-    auto require = [&](bool value, const char* message) { context.require(value, message); };
+TEST(ValidationTests, CoreBehavior) {
+    auto require = [&](bool value, const char* message) { EXPECT_TRUE(value) << message; };
     TransferChainFixture fixture;
     auto& chain = fixture.chain;
     auto forged = chain.blocks();

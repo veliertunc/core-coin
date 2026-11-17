@@ -2,8 +2,8 @@
 #include "../src/module.hpp"
 #include <filesystem>
 namespace corecoin::__tests {
-void crypto_tests(TestContext& context) {
-    auto require = [&](bool value, const char* message) { context.require(value, message); };
+TEST(CryptoTests, CoreBehavior) {
+    auto require = [&](bool value, const char* message) { EXPECT_TRUE(value) << message; };
     using corecoin::__detail::sha256;
     require(sha256("") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "SHA empty vector");
     require(sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "SHA abc vector");

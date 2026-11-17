@@ -1,0 +1,3 @@
+add_library(corecoin_transaction STATIC transaction.cpp ${PROJECT_SOURCE_DIR}/include/corecoin/blockchain.hpp)
+corecoin_component(corecoin_transaction)
+target_link_libraries(corecoin_transaction PUBLIC corecoin_crypto corecoin_amount)

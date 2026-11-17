@@ -1,5 +1,5 @@
 #include "corecoin/signing_key.hpp"
-#include "sha256.hpp"
+#include "crypto/sha256.hpp"
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <algorithm>

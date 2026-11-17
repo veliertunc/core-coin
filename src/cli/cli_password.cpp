@@ -1,4 +1,4 @@
-#include "cli_password.hpp"
+#include "cli/password.hpp"
 #include <iostream>
 #include <stdexcept>
 #ifdef _WIN32

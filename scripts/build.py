@@ -22,17 +22,20 @@ def main():
         parser.error(f"Compiler {args.compiler!r} not found. Run in Ubuntu WSL or select --compiler.")
     build = args.build_dir.resolve()
     build.mkdir(parents=True, exist_ok=True)
-    library = sorted(p for p in (ROOT / "src").glob("*.cpp") if p.name not in {"main.cpp", "cli_password.cpp"})
-    app = [ROOT / "src/main.cpp", ROOT / "src/cli_password.cpp"]
+    library = sorted(p for p in (ROOT / "src").rglob("*.cpp") if "cli" not in p.relative_to(ROOT / "src").parts)
+    app = sorted((ROOT / "src/cli").glob("*.cpp"))
     tests = sorted((ROOT / "tests").glob("*.cpp"))
+    gtest_root = ROOT / "third_party/googletest/googletest"
+    gtest = [gtest_root / "src/gtest-all.cc", gtest_root / "src/gtest_main.cc"]
+    if any(not source.is_file() for source in gtest):
+        parser.error("GoogleTest submodule missing; run git submodule update --init --recursive")
     commands = []
     objects = {}
-    for source in [*library, *app, *tests]:
+    for source in [*library, *app, *tests, *gtest]:
         obj = build / (source.relative_to(ROOT).as_posix().replace("/", "-") + ".o")
-        flags = [compiler, "-std=c++23", "-O2", "-Wall", "-Wextra", "-Wpedantic",
-                 "-I", str(ROOT / "include")]
-        if source not in app:
-            flags += ["-I", str(ROOT / "src")]
+        flags = [compiler, "-std=c++23", "-O2", "-Wall", "-Wextra", "-Wpedantic", "-pthread",
+                 "-I", str(ROOT / "include"), "-I", str(ROOT / "src"),
+                 "-I", str(gtest_root / "include"), "-I", str(gtest_root)]
         command = flags + ["-c", str(source), "-o", str(obj)]
         commands.append({"directory": str(ROOT), "file": str(source),
                          "arguments": command, "output": str(obj)})
@@ -58,8 +61,8 @@ def main():
             subprocess.run(entry["arguments"], cwd=ROOT, check=True)
             signature.write_text(command_text)
     suffix = ".exe" if os.name == "nt" else ""
-    for name, sources in [("corecoin-cli", [*library, *app]), ("corecoin-tests", [*library, *tests])]:
-        subprocess.run([compiler, *[str(objects[p]) for p in sources], "-o", str(build / (name + suffix)), "-lcrypto"],
+    for name, sources in [("corecoin-cli", [*library, *app]), ("corecoin-tests", [*library, *tests, *gtest])]:
+        subprocess.run([compiler, *[str(objects[p]) for p in sources], "-o", str(build / (name + suffix)), "-lcrypto", "-pthread"],
                        cwd=ROOT, check=True)
     if args.test:
         subprocess.run([str(build / ("corecoin-tests" + suffix))], cwd=ROOT, check=True)

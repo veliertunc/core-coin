@@ -3,8 +3,8 @@
 #include <stdexcept>
 
 namespace corecoin::__tests {
-void wallet_tests(TestContext& context) {
-    auto check = [&](bool value, const char* message) { context.require(value, message); };
+TEST(WalletTests, CoreBehavior) {
+    auto check = [&](bool value, const char* message) { EXPECT_TRUE(value) << message; };
     WalletFixture fixture;
     auto& chain = fixture.chain;
     auto& founder = fixture.founder;

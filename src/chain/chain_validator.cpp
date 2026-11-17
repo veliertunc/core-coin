@@ -1,6 +1,6 @@
-#include "chain_validator.hpp"
-#include "address.hpp"
-#include "genesis.hpp"
+#include "chain/chain_validator.hpp"
+#include "ledger/address.hpp"
+#include "chain/genesis.hpp"
 #include "corecoin/network.hpp"
 #include <algorithm>
 #include <stdexcept>

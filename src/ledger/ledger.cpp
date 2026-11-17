@@ -1,7 +1,7 @@
 #include "corecoin/ledger.hpp"
 #include "corecoin/blockchain.hpp"
 #include "corecoin/signing_key.hpp"
-#include "address.hpp"
+#include "ledger/address.hpp"
 #include <limits>
 #include <stdexcept>
 #include <utility>

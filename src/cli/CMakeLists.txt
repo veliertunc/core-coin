@@ -1,0 +1,5 @@
+add_library(corecoin_cli_input STATIC cli_password.cpp password.hpp)
+corecoin_component(corecoin_cli_input)
+add_executable(corecoin-cli main.cpp)
+target_include_directories(corecoin-cli PRIVATE "${PROJECT_SOURCE_DIR}/src")
+target_link_libraries(corecoin-cli PRIVATE corecoin corecoin_cli_input)

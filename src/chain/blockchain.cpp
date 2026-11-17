@@ -14,25 +14,6 @@ std::string field(std::string_view value) {
 }
 }
 
-Transaction::Transaction(std::string sender, std::string recipient, Amount amount, std::uint64_t nonce,
-                         std::string public_key, std::string signature)
-    : sender_(std::move(sender)), recipient_(std::move(recipient)), public_key_(std::move(public_key)),
-      signature_(std::move(signature)), amount_(amount), nonce_(nonce) {}
-
-std::string Transaction::signing_payload() const {
-    return "corecoin-tx-sign-v2|" + __detail::field(sender_) + __detail::field(recipient_) +
-           __detail::field(std::to_string(amount_)) + __detail::field(std::to_string(nonce_)) +
-           __detail::field(public_key_);
-}
-
-std::string Transaction::serialize() const {
-    if (!public_key_.empty() || !signature_.empty())
-        return signing_payload() + __detail::field(signature_);
-    return "corecoin-tx-v1|" + __detail::field(sender_) + __detail::field(recipient_) +
-           __detail::field(std::to_string(amount_)) + __detail::field(std::to_string(nonce_));
-}
-std::string Transaction::id() const { return __detail::sha256(serialize()); }
-
 Block::Block(std::uint64_t height, std::string previous_hash, std::int64_t timestamp,
              unsigned difficulty, std::vector<Transaction> transactions, std::uint64_t nonce)
     : height_(height), nonce_(nonce), previous_hash_(std::move(previous_hash)), timestamp_(timestamp),

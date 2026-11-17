@@ -2,8 +2,8 @@
 #include <limits>
 #include <utility>
 namespace corecoin::__tests {
-void supply_tests(TestContext& context) {
-    auto require = [&](bool value, const char* message) { context.require(value, message); };
+TEST(SupplyTests, CoreBehavior) {
+    auto require = [&](bool value, const char* message) { EXPECT_TRUE(value) << message; };
     Blockchain large({1, std::numeric_limits<Amount>::max()});
     large.mine_pending("alice");
     require(large.balance("alice") == maximum_supply - initial_wallet_allocation, "Reward capped at remaining supply");

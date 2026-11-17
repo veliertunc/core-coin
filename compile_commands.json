@@ -1,7 +1,7 @@
 [
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/address.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/amount/amount.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -9,20 +9,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/address.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/amount/amount.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-address.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-amount-amount.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-address.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-amount-amount.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/amount.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain/blockchain.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -30,20 +35,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/amount.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain/blockchain.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-amount.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain-blockchain.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-amount.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain-blockchain.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/blockchain.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain/chain_validator.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -51,20 +61,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/blockchain.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain/chain_validator.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-blockchain.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain-chain_validator.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-blockchain.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain-chain_validator.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_store.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain/genesis.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -72,20 +87,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_store.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain/genesis.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_store.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain-genesis.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_store.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain-genesis.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_validator.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/crypto/sha256.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -93,20 +113,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_validator.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/crypto/sha256.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_validator.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-crypto-sha256.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_validator.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-crypto-sha256.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/genesis.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/crypto/signing_key.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -114,20 +139,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/genesis.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/crypto/signing_key.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-genesis.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-crypto-signing_key.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-genesis.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-crypto-signing_key.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger/address.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -135,20 +165,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger/address.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger-address.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger-address.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/sha256.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger/ledger.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -156,20 +191,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/sha256.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/ledger/ledger.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-sha256.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger-ledger.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-sha256.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-ledger-ledger.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/signing_key.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/storage/chain_store.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -177,20 +217,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/signing_key.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/storage/chain_store.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-signing_key.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-storage-chain_store.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-signing_key.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-storage-chain_store.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/wallet.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/transaction/transaction.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -198,20 +243,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/wallet.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/transaction/transaction.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-wallet.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-transaction-transaction.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-wallet.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-transaction-transaction.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/main.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/wallet/wallet.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -219,18 +269,25 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/main.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/wallet/wallet.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-main.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-wallet-wallet.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-main.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-wallet-wallet.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli_password.cpp",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli/cli_password.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++23",
@@ -238,14 +295,47 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli_password.cpp",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli/cli_password.cpp",
       "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli_password.cpp.o"
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli-cli_password.cpp.o"
     ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli_password.cpp.o"
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli-cli_password.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli/main.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-pthread",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/cli/main.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli-main.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-cli-main.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
@@ -257,10 +347,15 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/amount_tests.cpp",
       "-o",
@@ -278,10 +373,15 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/blockchain_tests.cpp",
       "-o",
@@ -299,10 +399,15 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/crypto_tests.cpp",
       "-o",
@@ -320,10 +425,15 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/fixtures.cpp",
       "-o",
@@ -341,37 +451,21 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/supply_tests.cpp",
       "-o",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-supply_tests.cpp.o"
     ],
     "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-supply_tests.cpp.o"
-  },
-  {
-    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
-    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/test_main.cpp",
-    "arguments": [
-      "/usr/bin/g++",
-      "-std=c++23",
-      "-O2",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-I",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
-      "-I",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
-      "-c",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/test_main.cpp",
-      "-o",
-      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-test_main.cpp.o"
-    ],
-    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-test_main.cpp.o"
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
@@ -383,10 +477,15 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/validation_tests.cpp",
       "-o",
@@ -404,15 +503,72 @@
       "-Wall",
       "-Wextra",
       "-Wpedantic",
+      "-pthread",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
       "-I",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
       "-c",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/tests/wallet_tests.cpp",
       "-o",
       "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-wallet_tests.cpp.o"
     ],
     "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/tests-wallet_tests.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/src/gtest-all.cc",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-pthread",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/src/gtest-all.cc",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/third_party-googletest-googletest-src-gtest-all.cc.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/third_party-googletest-googletest-src-gtest-all.cc.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/src/gtest_main.cc",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-pthread",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/third_party/googletest/googletest/src/gtest_main.cc",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/third_party-googletest-googletest-src-gtest_main.cc.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/third_party-googletest-googletest-src-gtest_main.cc.o"
   }
 ]

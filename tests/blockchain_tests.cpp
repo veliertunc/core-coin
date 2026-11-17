@@ -1,9 +1,9 @@
 #include "module.hpp"
 
 namespace corecoin::__tests {
-void blockchain_tests(TestContext& context) {
-    auto require = [&](bool value, const char* message) { context.require(value, message); };
-    auto rejects = [&](auto action, const char* message) { context.rejects(action, message); };
+TEST(BlockchainTests, CoreBehavior) {
+    auto require = [&](bool value, const char* message) { EXPECT_TRUE(value) << message; };
+    auto rejects = [&](auto action, const char* message) { EXPECT_ANY_THROW(action()) << message; };
     rejects([] { Blockchain bad({0, 50}); }, "Reject zero difficulty");
     rejects([] { Blockchain bad({1, 0}); }, "Reject zero reward");
     Blockchain chain({1, 50});
