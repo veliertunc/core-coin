@@ -4,7 +4,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(corecoin src/sha256.cpp src/blockchain.cpp src/address.cpp src/genesis.cpp
-                     src/wallet.cpp src/amount.cpp src/ledger.cpp src/chain_validator.cpp)
+                     src/wallet.cpp src/amount.cpp src/ledger.cpp src/chain_validator.cpp src/chain_store.cpp)
 target_include_directories(corecoin PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
                                    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_compile_features(corecoin PUBLIC cxx_std_23)

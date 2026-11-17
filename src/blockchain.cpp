@@ -24,8 +24,8 @@ std::string Transaction::serialize() const {
 std::string Transaction::id() const { return __detail::sha256(serialize()); }
 
 Block::Block(std::uint64_t height, std::string previous_hash, std::int64_t timestamp,
-             unsigned difficulty, std::vector<Transaction> transactions)
-    : height_(height), previous_hash_(std::move(previous_hash)), timestamp_(timestamp),
+             unsigned difficulty, std::vector<Transaction> transactions, std::uint64_t nonce)
+    : height_(height), nonce_(nonce), previous_hash_(std::move(previous_hash)), timestamp_(timestamp),
       difficulty_(difficulty), transactions_(std::move(transactions)) {
     if (difficulty > 4) throw std::invalid_argument("Demo difficulty cannot exceed 4");
     hash_ = calculate_hash();
@@ -57,6 +57,22 @@ Blockchain::Blockchain(ChainConfig config) : config_(config) {
     confirmed_.credit(std::string(initial_wallet_address), initial_wallet_allocation);
     issued_ = initial_wallet_allocation;
     projected_ = confirmed_;
+}
+Blockchain Blockchain::from_blocks(std::vector<Block> blocks, ChainConfig config) {
+    std::string error;
+    if (!validate_chain(blocks, config, &error)) throw std::invalid_argument("Invalid saved chain: " + error);
+    Blockchain result(config);
+    for (std::size_t i = 1; i < blocks.size(); ++i) {
+        const auto& transactions = blocks[i].transactions();
+        for (std::size_t j = 0; j + 1 < transactions.size(); ++j)
+            result.confirmed_.apply_transfer(transactions[j]);
+        const auto& reward = transactions.back();
+        if (reward.amount() > 0) result.confirmed_.credit(reward.recipient(), reward.amount());
+        result.issued_ += reward.amount();
+    }
+    result.projected_ = result.confirmed_;
+    result.blocks_ = std::move(blocks);
+    return result;
 }
 void Blockchain::submit(Transaction transaction) {
     if (pending_.size() >= 1000) throw std::length_error("Pending transaction limit reached");

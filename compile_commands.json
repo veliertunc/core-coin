@@ -64,6 +64,27 @@
   },
   {
     "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
+    "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_store.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/include",
+      "-I",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src",
+      "-c",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_store.cpp",
+      "-o",
+      "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_store.cpp.o"
+    ],
+    "output": "/mnt/c/Users/ertun/.t3/projects/core-coin/build-local/src-chain_store.cpp.o"
+  },
+  {
+    "directory": "/mnt/c/Users/ertun/.t3/projects/core-coin",
     "file": "/mnt/c/Users/ertun/.t3/projects/core-coin/src/chain_validator.cpp",
     "arguments": [
       "/usr/bin/g++",

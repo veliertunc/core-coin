@@ -112,9 +112,9 @@ form also works. `balance` shows confirmed and pending-adjusted balances;
 `balance ADDRESS` inspects a specific wallet.
 
 Amounts in `send` are integer Gil; for example, `send bob 1` sends 1 Gil.
-Transfers become confirmed after mining. All state is in memory and resets on
-exit, including transaction history and wallet balances. Restarting starts a new
-chain with the original founder allocation. These addresses work only within
+Transfers become confirmed after mining. The shell saves confirmed blocks to `corecoin.chain` and validates them on restart.
+Pass a different path with `--shell PATH`. Pending transactions are held in memory
+and are lost on exit; mine them to confirm and save them. These addresses work only within
 the same local chain; there is no transfer between separate running processes.
 Names use 1–64 ASCII letters, digits, underscores, or hyphens.
 
@@ -170,7 +170,7 @@ by a later transaction in the same ordered block. Current-block rewards cannot.
 This is an educational local prototype, **not suitable for real funds**.
 Account names are not cryptographic wallets: transactions are unsigned, and
 any local caller can spend from any funded account. It has no peer-to-peer
-network, distributed consensus/fork selection, persistence, transaction fees,
+network, distributed consensus/fork selection, transaction fees,
 difficulty adjustment, or audited cryptography. Proof of work demonstrates
 local integrity checks; it does not by itself make this a secure currency.
 

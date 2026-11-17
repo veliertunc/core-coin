@@ -28,10 +28,12 @@ void demo() {
     if (!chain.validate(&error)) throw std::runtime_error(error);
     std::cout << "Chain validation: OK\n";
 }
-void shell() {
-    Blockchain chain;
+void shell(const std::string& path) {
+    ChainStore store(path);
+    Blockchain chain = store.exists() ? store.load() : Blockchain{};
+    if (!store.exists()) store.save(chain);
     Wallet active{std::string(initial_wallet_address)};
-    std::cout << "CoreCoin local shell (in-memory, unsigned accounts)\n"
+    std::cout << "CoreCoin local shell (persistent chain, unsigned accounts)\n"
                  "wallet ADDRESS | receive | send TO GIL | balance [ADDRESS]\n"
                  "mine ACCOUNT | chain | validate | quit\n"
                  "Legacy send FROM TO GIL is also supported.\n"
@@ -59,7 +61,11 @@ void shell() {
                           << " | Including pending: " << format_amount(wallet.available_balance(chain)) << '\n';
             } else if (command == "mine") {
                 if (!(input >> a) || (input >> extra)) throw std::invalid_argument("Expected one account");
-                std::cout << "Mined " << chain.mine_pending(a).hash() << '\n';
+                auto candidate = chain;
+                const auto hash = candidate.mine_pending(a).hash();
+                store.save(candidate);
+                chain = std::move(candidate);
+                std::cout << "Mined " << hash << '\n';
             } else if (command == "send") {
                 if (!(input >> a >> b)) throw std::invalid_argument("Expected TO integer Gil");
                 std::string sender = active.address(), recipient = a, value = b;
@@ -83,13 +89,13 @@ void shell() {
 int main(int argc, char** argv) {
     try {
         const std::string mode = argc > 1 ? argv[1] : "--demo";
-        if (argc > 2 || (mode != "--demo" && mode != "--shell" && mode != "--help")) {
-            std::cerr << "Usage: corecoin-cli [--demo|--shell|--help]\n";
+        if (argc > 3 || (argc == 3 && mode != "--shell") || (mode != "--demo" && mode != "--shell" && mode != "--help")) {
+            std::cerr << "Usage: corecoin-cli [--demo|--shell [CHAIN_FILE]|--help]\n";
             return 1;
         }
-        if (mode == "--shell") corecoin::__cli::shell();
+        if (mode == "--shell") corecoin::__cli::shell(argc == 3 ? argv[2] : "corecoin.chain");
         else if (mode == "--demo") corecoin::__cli::demo();
-        else std::cout << "Usage: corecoin-cli [--demo|--shell|--help]\n";
+        else std::cout << "Usage: corecoin-cli [--demo|--shell [CHAIN_FILE]|--help]\n";
     } catch (const std::exception& ex) {
         std::cerr << "Error: " << ex.what() << '\n';
         return 1;

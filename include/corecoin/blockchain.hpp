@@ -25,7 +25,7 @@ private:
 class Block {
 public:
     Block(std::uint64_t height, std::string previous_hash, std::int64_t timestamp,
-          unsigned difficulty, std::vector<Transaction> transactions);
+          unsigned difficulty, std::vector<Transaction> transactions, std::uint64_t nonce = 0);
     void mine(std::uint64_t max_attempts = 10'000'000);
     [[nodiscard]] std::string calculate_hash() const;
     [[nodiscard]] bool has_valid_proof() const;
@@ -52,6 +52,8 @@ struct ChainConfig {
 class Blockchain {
 public:
     explicit Blockchain(ChainConfig config = {});
+    [[nodiscard]] static Blockchain from_blocks(std::vector<Block> blocks, ChainConfig config = {});
+    [[nodiscard]] ChainConfig config() const noexcept { return config_; }
     void submit(Transaction transaction);
     const Block& mine_pending(const std::string& miner);
     [[nodiscard]] Amount balance(const std::string& account) const;
