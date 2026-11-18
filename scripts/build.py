@@ -70,6 +70,8 @@ def main():
                         str(build / ("corecoin-cli" + suffix))], cwd=ROOT, check=True)
         subprocess.run([sys.executable, str(ROOT / "tests/peer_tests.py"),
                         str(build / ("corecoin-cli" + suffix))], cwd=ROOT, check=True)
+        subprocess.run([sys.executable, str(ROOT / "tests/rest_api_tests.py"),
+                        str(build / ("corecoin-cli" + suffix))], cwd=ROOT, check=True)
 
 
 if __name__ == "__main__":

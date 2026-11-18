@@ -10,3 +10,4 @@
 #include "signing_key.hpp"
 #include "consensus.hpp"
 #include "peer.hpp"
+#include "rest_server.hpp"

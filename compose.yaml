@@ -1,0 +1,25 @@
+services:
+  corecoin:
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    ports:
+      - "127.0.0.1:18444:18444"
+    volumes:
+      - corecoin_data:/data
+
+  # REST API (see API.md). Do not run it against the same chain file as an
+  # active shell: each process keeps its own in-memory state.
+  corecoin-api:
+    build:
+      context: .
+    command: ["--api", "/data/api.chain", "--bind", "0.0.0.0", "--port", "18445"]
+    ports:
+      - "127.0.0.1:18445:18445"
+    volumes:
+      - corecoin_data:/data
+    profiles: ["api"]
+
+volumes:
+  corecoin_data:

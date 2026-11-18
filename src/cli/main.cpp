@@ -6,6 +6,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <charconv>
+#include <atomic>
+#include <csignal>
+#include <vector>
 
 namespace corecoin::__cli {
 std::uint16_t parse_port(const std::string& text) {
@@ -148,17 +151,55 @@ void shell(const std::string& path) {
         } catch (const std::exception& ex) { std::cout << "Error: " << ex.what() << '\n'; }
     }
 }
+std::atomic<RestServer*> active_api{nullptr};
+extern "C" void stop_api(int) { if (auto* server = active_api.load()) server->stop(); }
+// --api [CHAIN_FILE] [--bind ADDRESS] [--port PORT] [--cors-origin ORIGIN]
+void api(const std::vector<std::string>& args) {
+    std::string chain_file = "corecoin.chain";
+    RestConfig config;
+    bool chain_given = false;
+    for (std::size_t i = 0; i < args.size(); ++i) {
+        const auto value = [&]() -> const std::string& {
+            if (i + 1 >= args.size()) throw std::invalid_argument("Missing value for " + args[i]);
+            return args[++i];
+        };
+        if (args[i] == "--bind") config.bind_address = value();
+        else if (args[i] == "--port") config.port = parse_port(value());
+        else if (args[i] == "--cors-origin") config.cors_origin = value();
+        else if (!chain_given && !args[i].starts_with("--")) { chain_file = args[i]; chain_given = true; }
+        else throw std::invalid_argument("Unknown API option: " + args[i]);
+    }
+    config.access_log = [](std::string_view line) { std::cout << line << std::endl; };
+    const auto bind_address = config.bind_address;
+    const auto port = config.port;
+    RestServer server(chain_file, std::move(config));
+    active_api.store(&server);
+    std::signal(SIGINT, stop_api);
+    std::signal(SIGTERM, stop_api);
+    server.run([&] {
+        std::cout << "CoreCoin REST API listening on http://" << bind_address << ':' << port
+                  << "/api/v1 (chain " << chain_file << "; Ctrl+C to stop)" << std::endl;
+    });
+    active_api.store(nullptr);
+    std::cout << "API stopped" << std::endl;
+}
 }
 int main(int argc, char** argv) {
+    constexpr auto usage = "Usage: corecoin-cli [--demo|--shell [CHAIN_FILE]|--help]\n"
+                           "       corecoin-cli --api [CHAIN_FILE] [--bind ADDRESS] [--port PORT] [--cors-origin ORIGIN]\n";
     try {
         const std::string mode = argc > 1 ? argv[1] : "--demo";
+        if (mode == "--api") {
+            corecoin::__cli::api(std::vector<std::string>(argv + 2, argv + argc));
+            return 0;
+        }
         if (argc > 3 || (argc == 3 && mode != "--shell") || (mode != "--demo" && mode != "--shell" && mode != "--help")) {
-            std::cerr << "Usage: corecoin-cli [--demo|--shell [CHAIN_FILE]|--help]\n";
+            std::cerr << usage;
             return 1;
         }
         if (mode == "--shell") corecoin::__cli::shell(argc == 3 ? argv[2] : "corecoin.chain");
         else if (mode == "--demo") corecoin::__cli::demo();
-        else std::cout << "Usage: corecoin-cli [--demo|--shell [CHAIN_FILE]|--help]\n";
+        else std::cout << usage;
     } catch (const std::exception& ex) {
         std::cerr << "Error: " << ex.what() << '\n';
         return 1;

@@ -1,0 +1,14 @@
+.git
+.gitignore
+.vs
+.vscode
+.cache
+build*
+third_party
+tests
+scripts
+assets
+compile_commands.json
+*.chain
+*.chain.*
+*.pem

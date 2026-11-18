@@ -47,7 +47,7 @@ Blockchain ChainCodec::read(std::istream& in) {
             if (!(in >> std::quoted(sender) >> std::quoted(recipient) >> amount >> tx_nonce) || sender.size() > 67 || recipient.size() > 67)
                 throw std::runtime_error("Invalid transaction in chain file");
             if (magic == "CORECOIN2" && (!(in >> std::quoted(public_key) >> std::quoted(signature)) ||
-                                          public_key.size() > 64 || signature.size() > 128))
+                                          public_key.size() > 66 || signature.size() > 128))
                 throw std::runtime_error("Invalid signature in chain file");
             transactions.emplace_back(std::move(sender), std::move(recipient), amount, tx_nonce,
                                       std::move(public_key), std::move(signature));

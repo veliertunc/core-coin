@@ -5,9 +5,12 @@
 #include <string_view>
 
 namespace corecoin {
-// Ed25519 key pair. Key files are encrypted; keep a separate backup of the file.
+// ECDSA key pair on secp256k1 with SHA-256. Public keys are 33-byte compressed
+// SEC1 points; signatures are 64-byte r||s with low S. Addresses are derived
+// from the public key. Key files are encrypted; keep a separate backup of the file.
 class SigningKey {
 public:
+    static constexpr std::string_view algorithm = "ECDSA-secp256k1-SHA256";
     static SigningKey generate();
     static SigningKey load(const std::filesystem::path& path, std::string_view password);
     void save(const std::filesystem::path& path, std::string_view password) const;

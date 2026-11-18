@@ -52,6 +52,22 @@ for database export; each build copies it to the repository root. Visual Studio'
 generator does not export this database. The database contains machine-specific
 absolute paths: always regenerate it in the environment where the editor runs.
 
+### Docker Compose
+
+Build the image and start an interactive shell:
+
+```sh
+docker compose build
+docker compose run --rm --service-ports corecoin
+```
+
+The named `corecoin_data` volume stores the chain and wallet files in `/data`,
+including files created with `wallet-create`. Back up wallet files and passwords
+separately. The peer port is published on `127.0.0.1:18444`; run
+`serve 0.0.0.0 18444` inside the shell to accept one peer connection through it.
+The service runs an interactive CLI, not an always-on peer daemon. Enter `quit`
+to exit; the named volume remains available for the next run.
+
 ## Try the coin
 
 ### VS Code on this Windows setup
@@ -136,6 +152,23 @@ and are lost on exit; mine them to confirm and save them. These addresses work o
 the same local chain; there is no transfer between separate running processes.
 Names use 1–64 ASCII letters, digits, underscores, or hyphens.
 
+### REST API
+
+Run a node with a JSON HTTP API instead of the interactive shell:
+
+```sh
+./build-local/corecoin-cli --api corecoin.chain            # http://127.0.0.1:18445/api/v1
+curl http://127.0.0.1:18445/api/v1/node
+curl -X POST http://127.0.0.1:18445/api/v1/transactions -H "Content-Type: application/json" \
+     -d '{"sender": "founder", "recipient": "bob", "amount_core": "12"}'
+curl -X POST http://127.0.0.1:18445/api/v1/blocks -H "Content-Type: application/json" -d '{"miner": "miner"}'
+```
+
+Options: `--bind ADDRESS`, `--port PORT` (default 18445), and `--cors-origin ORIGIN`.
+With Docker, run `docker compose --profile api up corecoin-api`. See **[API.md](API.md)**
+for every endpoint, request/response schemas, error codes, and signing transfers from
+key-backed wallets. The API is unauthenticated, so keep it on localhost or a trusted network.
+
 ## Design
 
 Here, "module" means namespace, not a filename or a C++ `export module` unit.
@@ -161,7 +194,9 @@ so typed constants and `#pragma once` avoid reserved macro names.
 - `Wallet` handles named account selection, querying balances, and submitting
   transfers. Address checks, amount formatting, and genesis construction live
   in separate components. The wallet does not mine or print output.
-- `SigningKey` generates Ed25519 keys, signs messages, verifies signatures, and
+- `SigningKey` generates ECDSA secp256k1 keys, derives `cc_` addresses from
+  their compressed public keys, signs messages (SHA-256, low-S), verifies
+  signatures, and
   stores keys in password-encrypted PKCS#8 files. Back up the encrypted file and
   keep its password separately; losing either prevents recovery. Construct a
   `Wallet` from a `SigningKey` to sign transfers from its `cc_` address.
@@ -169,8 +204,12 @@ so typed constants and `#pragma once` avoid reserved macro names.
 - `Block` commits to its height, previous hash, timestamp, difficulty, nonce,
   and ordered transactions. Mining searches for leading hexadecimal zeroes.
 - `Ledger` owns account balances and nonces and applies transfer rules.
+- The `rest` component (`RestServer`, internals in `corecoin::__rest`) is a
+  presentation layer like the CLI: a dependency-free JSON parser, HTTP/1.1
+  parsing, a router, a mutex-guarded `NodeService` that owns the chain, a
+  presenter that maps domain objects to JSON, and the socket listener.
 - CMake builds the amount, cryptography, transaction, ledger, chain, wallet,
-  storage, and CLI input components as separate libraries. The `corecoin`
+  storage, consensus, peer, REST, and CLI input components as separate libraries. The `corecoin`
   interface target gathers the public components for consumers.
 - `Blockchain` owns the chain, pending pool, and confirmed/projected ledgers.
   Submission checks pending balances to prevent double spending and nonces to
