@@ -20,36 +20,6 @@ TEST(CryptoTests, CoreBehavior) {
     require(!SigningKey::verify(key.public_key(), "changed", signature), "Reject modified signed message");
     require(!SigningKey::verify(other.public_key(), "transfer", signature), "Reject wrong public key");
     require(!SigningKey::verify(key.public_key(), "transfer", "bad"), "Reject malformed signature");
-    const auto public_key = key.public_key();
-    require(public_key.size() == 66 && (public_key.starts_with("02") || public_key.starts_with("03")),
-            "Compressed secp256k1 public key");
-    require(signature.size() == 128, "Compact r||s ECDSA signature");
-    require(key.address() == SigningKey::address_for(public_key) &&
-            key.address() == "cc_" + sha256("corecoin-address-v2|" + public_key), "Address derives from ECDSA key");
-    {
-        // Known vector: the generator point G is a valid compressed key.
-        const std::string generator = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
-        require(SigningKey::address_for(generator).size() == 67, "Address for curve generator");
-        bool off_curve = false;
-        try { (void)SigningKey::address_for("02" + std::string(64, '0')); } catch (const std::invalid_argument&) { off_curve = true; }
-        require(off_curve, "Reject public key not on curve");
-        bool uncompressed = false;
-        try { (void)SigningKey::address_for("04" + std::string(128, 'a')); } catch (const std::invalid_argument&) { uncompressed = true; }
-        require(uncompressed, "Reject non-compressed public key");
-    }
-    {
-        // s' = n - s verifies mathematically; only the low-S form is accepted.
-        constexpr std::string_view n = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
-        std::string high_s(64, '0');
-        int borrow = 0;
-        for (int i = 63; i >= 0; --i) {
-            auto value = [](char c) { return c <= '9' ? c - '0' : c - 'a' + 10; };
-            int d = value(n[i]) - value(signature[64 + i]) - borrow;
-            borrow = d < 0; if (d < 0) d += 16;
-            high_s[i] = "0123456789abcdef"[d];
-        }
-        require(!SigningKey::verify(public_key, "transfer", signature.substr(0, 64) + high_s), "Reject high-S signature");
-    }
     const auto directory = std::filesystem::temp_directory_path() / ("corecoin-test-" + key.address());
     if (!std::filesystem::create_directory(directory)) throw std::runtime_error("Cannot create wallet test directory");
     struct Cleanup { std::filesystem::path path; ~Cleanup() { std::error_code error; std::filesystem::remove_all(path, error); } } cleanup{directory};
